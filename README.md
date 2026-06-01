@@ -87,8 +87,11 @@ Manual checks not covered by automation (screen reader, Reduce Motion, real CMS 
 
 ## Status
 
-- v1: core RSVP, controls, theming, accessibility, single-script auto-install (Ghost first; WordPress + generic adapters present).
-- v1.1 (planned): Service Worker offline support, WordPress adapter polish, bundle-size CI check.
+Current release: **v0.2.0** ([changelog](CHANGELOG.md)).
+
+- v0.1: core RSVP, controls, theming, accessibility, single-script auto-install (Ghost + WordPress + generic).
+- v0.2: Substack adapter, WordPress block-theme support, `rsvp:error` observability hook, offline-after-init verification, CI + GitHub Pages demo.
+- v0.3 (planned): version-pin guarantees for major-version cuts; per-publication theming kit; analytics adapter.
 
 ## Observability
 
@@ -125,12 +128,27 @@ To make this real in production, host the JS at a **versioned URL** and serve it
 
 ```
 # Versioned URL — change the version segment when you ship a new release
-https://your-cdn.example.com/v0.1.0/rsvp-reader.iife.js
+https://your-cdn.example.com/v0.2.0/rsvp-reader.iife.js
 
 # Recommended CDN response headers
 Cache-Control: public, max-age=31536000, immutable
 Access-Control-Allow-Origin: *
 Content-Type: application/javascript; charset=utf-8
+```
+
+### Hosting it for you
+
+Three free, immutable, public paths are available out of the box once the package is on npm:
+
+```html
+<!-- unpkg, version-pinned -->
+<script src="https://unpkg.com/speed-reader-widget@0.2.0" defer></script>
+
+<!-- jsDelivr, version-pinned -->
+<script src="https://cdn.jsdelivr.net/npm/speed-reader-widget@0.2.0" defer></script>
+
+<!-- ESM via esm.sh -->
+<script type="module" src="https://esm.sh/speed-reader-widget@0.2.0"></script>
 ```
 
 `immutable` tells browsers they can keep the file forever without revalidation; site owners switch to a new version by pointing the `<script src>` at the new path. CDNs that work well for this: Cloudflare R2 + Cache Rules, AWS S3 + CloudFront, Bunny.net, Fastly, or even GitHub Pages for low-traffic free hosting.

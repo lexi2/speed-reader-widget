@@ -1,13 +1,21 @@
 {
   "name": "speed-reader-widget",
-  "version": "0.1.0",
-  "description": "Embeddable RSVP (Rapid Serial Visual Presentation) reader widget. Single-script auto-install for Ghost, WordPress, and generic CMS sites.",
+  "version": "0.2.0",
+  "description": "Embeddable RSVP (Rapid Serial Visual Presentation) reader widget. Single-script auto-install for Ghost, WordPress, Substack, and any CMS.",
   "type": "module",
   "main": "dist/rsvp-reader.js",
+  "module": "dist/rsvp-reader.js",
+  "unpkg": "dist/rsvp-reader.iife.js",
+  "jsdelivr": "dist/rsvp-reader.iife.js",
+  "sideEffects": [
+    "dist/rsvp-reader.iife.js",
+    "src/index.ts"
+  ],
   "files": [
     "dist",
     "LICENSE",
     "COMMERCIAL.md",
+    "CHANGELOG.md",
     "README.md"
   ],
   "author": "Alex Rosewarne <alex@rosewarneconsulting.com.au>",
@@ -41,7 +49,8 @@
     "size": "gzip -c dist/rsvp-reader.iife.js | wc -c",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "test:headed": "playwright test --headed"
+    "test:headed": "playwright test --headed",
+    "prepublishOnly": "npm test && npm run build"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
