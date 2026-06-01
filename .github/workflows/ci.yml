@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test & build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Assert bundle size budget (< 30 KB gzipped)
+        run: |
+          SIZE=$(gzip -c dist/rsvp-reader.iife.js | wc -c)
+          echo "IIFE bundle gzipped: $SIZE bytes"
+          if [ "$SIZE" -ge 30720 ]; then
+            echo "::error::Bundle exceeds 30 KB gzipped budget ($SIZE bytes)"
+            exit 1
+          fi
+
+      - name: Run Playwright tests
+        run: npm test
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

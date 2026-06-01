@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generic article demo — speed-reader-widget</title>
+  <style>
+    body { font: 16px/1.65 -apple-system, system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+    .nav { font-size: 0.85rem; color: #777; margin-bottom: 1rem; }
+    .nav a { color: #2563eb; }
+    article { font-size: 1.05rem; }
+    h1 { font-size: 2rem; }
+    p { margin: 0 0 1.25rem; }
+    @media (prefers-color-scheme: dark) {
+      body { color: #fafafa; background: #0a0a0b; }
+      .nav { color: #a1a1aa; }
+    }
+  </style>
+</head>
+<body>
+  <p class="nav"><a href="./">← back to landing</a> · Generic site (no CMS markers — falls back to schema.org / &lt;article&gt; detection)</p>
+  <main>
+    <article itemscope itemtype="https://schema.org/Article">
+      <h1 itemprop="headline">The case for handcrafted tools in a generated world</h1>
+      <div itemprop="articleBody">
+        <p>There is a school of thought that says the more automated the world becomes, the more value accrues to things that are obviously not automated. A handwritten letter. A hand-thrown bowl. A handmade tool. The premise is straightforward: scarcity is a property of human attention, and human attention is the one resource that cannot, by definition, be automated.</p>
+        <p>I think this is mostly right, with one important amendment. The value is not in the handcrafted-ness per se. It is in the legibility of the choices the maker made. A handmade bowl tells you, at a glance, where the maker decided to round a corner, where to leave a thumbprint, where to stop sanding. A factory bowl tells you none of those things, because they were not choices.</p>
+        <p>This matters for software, too, even though software is not handmade in any meaningful sense. The best software still reads like someone thought about it. The defaults are sensible. The error messages presume goodwill. The keyboard shortcuts make sense once you know them, and the visual design rewards careful looking. None of that requires a person literally typing every line, but it does require a person, somewhere, deciding what the experience should feel like.</p>
+        <p>The same logic applies to embedded tools — the widgets and plugins that increasingly mediate our experience of online content. Most are forgettable, because most are generic. A few are obvious in their care. You can tell, within seconds, whether a reading widget was built by someone who reads, or someone who shipped a feature.</p>
+        <p>None of this is an argument against automation. It is an argument for legibility within automation. The machinery is fine. What matters is whether anyone made a choice.</p>
+      </div>
+    </article>
+  </main>
+  <script src="./rsvp-reader.iife.js" defer></script>
+</body>
+</html>

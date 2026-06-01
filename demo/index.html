@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>speed-reader-widget — embeddable RSVP reader</title>
+  <meta name="description" content="Drop-in speed-reading widget for Ghost, WordPress, and any CMS. Under 10 KB. Accessible. Single-script auto-install." />
+  <meta property="og:title" content="speed-reader-widget" />
+  <meta property="og:description" content="Drop-in RSVP speed reader for any blog. <10 KB, accessible, single-script install." />
+  <meta property="og:type" content="website" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --fg: #18181b; --bg: #ffffff; --muted: #71717a;
+      --surface: #f4f4f5; --border: #e4e4e7;
+      --accent: #2563eb; --accent-on: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #fafafa; --bg: #0a0a0b; --muted: #a1a1aa;
+        --surface: #18181b; --border: #27272a;
+        --accent: #2546f0; --accent-on: #ffffff;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      font: 16px/1.65 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--fg);
+      background: var(--bg);
+      margin: 0;
+    }
+    .container { max-width: 760px; margin: 0 auto; padding: 0 1.25rem; }
+
+    header.hero {
+      padding: 4rem 0 2rem;
+      text-align: left;
+    }
+    .badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      font-size: 0.8rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.55rem;
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.75rem;
+    }
+    .tagline {
+      font-size: 1.15rem;
+      color: var(--muted);
+      margin: 0 0 1.75rem;
+      max-width: 56ch;
+    }
+    .cta {
+      display: flex;
+      gap: 0.625rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      background: var(--bg);
+      transition: filter 120ms ease, background 120ms ease;
+    }
+    .btn:hover { background: var(--surface); }
+    .btn--primary {
+      background: var(--accent);
+      color: var(--accent-on);
+      border-color: var(--accent);
+    }
+    .btn--primary:hover { filter: brightness(1.08); background: var(--accent); }
+
+    section { padding: 2.5rem 0; border-top: 1px solid var(--border); }
+    section h2 {
+      font-size: 1.3rem;
+      letter-spacing: -0.01em;
+      margin: 0 0 1rem;
+    }
+
+    pre {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+      overflow-x: auto;
+      font: 0.875rem/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--fg);
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.95em; }
+
+    ul.features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.5rem 1rem;
+    }
+    ul.features li {
+      padding: 0.45rem 0;
+      color: var(--muted);
+    }
+    ul.features li strong { color: var(--fg); }
+
+    article.demo-article {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+    }
+    article.demo-article h3 { margin-top: 0; }
+    article.demo-article p { margin: 0 0 1rem; }
+
+    footer {
+      padding: 2.5rem 0 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--fg); }
+  </style>
+</head>
+<body class="post-template">
+  <main class="container">
+    <header class="hero">
+      <div class="badges">
+        <span class="badge">FSL-1.1-MIT</span>
+        <span class="badge">&lt; 10 KB gzipped</span>
+        <span class="badge">Zero runtime deps</span>
+        <span class="badge">WCAG AA</span>
+      </div>
+      <h1>Speed-reading, dropped into any blog.</h1>
+      <p class="tagline">
+        An embeddable RSVP (rapid serial visual presentation) reader. One <code>&lt;script&gt;</code> tag and every post on your Ghost or WordPress site gets a "Read faster" button. Under 10 KB. No dependencies. No host-page conflicts.
+      </p>
+      <div class="cta">
+        <a class="btn btn--primary" href="#demo">Try it below ↓</a>
+        <a class="btn" href="https://github.com/lexi2/speed-reader-widget">View source on GitHub</a>
+        <a class="btn" href="https://github.com/lexi2/speed-reader-widget/blob/main/COMMERCIAL.md">Commercial license</a>
+      </div>
+    </header>
+
+    <section id="demo">
+      <h2>Live demo — the widget auto-installs on this article</h2>
+      <p style="color: var(--muted); margin-top: -0.25rem;">Look for the blue <em>Read faster</em> button just above the article body. That button wasn't in the HTML — it was injected by the script.</p>
+      <article class="demo-article gh-article">
+        <h3>How embedded tools quietly took over the modern web</h3>
+        <div class="gh-content">
+          <p>The first widgets people added to their websites were small and self-contained. A weather sticker. A visit counter. A chat box. None of them did anything important; all of them announced that someone, somewhere, had been thinking about the page beyond the words on it.</p>
+          <p>That impulse has not gone away, it has just gotten more useful. The modern web is a stack of embedded behaviour. Comment systems, search bars, video players, payment forms, scheduling widgets, AI assistants, analytics, and reading aids all live inside larger sites that nobody planned to share with anyone else. Each of them solves a real problem the host site does not want to build from scratch.</p>
+          <p>What ties them together is the embed model. Add one script tag. Maybe set a couple of attributes. The widget does the work of figuring out where it lives and how to behave. The host site keeps its layout, its styling, its content. The widget keeps its independence and its release cadence.</p>
+          <p>This balance is precarious. The host wants the widget to feel native, but cannot accept it intruding on the rest of the page. The widget wants to be useful, but cannot afford to know much about its environment. The only way that combination works at scale is if the contract between them is small, well-defined, and conservative on both sides.</p>
+          <p>That is a constraint, but it is also a feature. Constraints push you toward simple things. A reading widget that fits in one script tag, behaves predictably across CMS platforms, and gets out of the way when it is not needed is a more honest tool than one that demands to be installed, configured, and threaded through a build pipeline. It is what you would actually want, if you stopped to think about it.</p>
+        </div>
+      </article>
+    </section>
+
+    <section>
+      <h2>Embed it in 30 seconds</h2>
+      <p>In Ghost: <strong>Settings → Code Injection → Site Footer</strong>. In WordPress: paste into <code>footer.php</code> or a footer-injection plugin.</p>
+      <pre><code>&lt;script
+  src="https://your-cdn.example.com/rsvp-reader.iife.js"
+  data-wpm="300"
+  data-theme="auto"
+  data-mode="inline"
+  defer&gt;
+&lt;/script&gt;</code></pre>
+      <p style="color: var(--muted);">That's it. The widget detects single-post pages (Ghost <code>body.post-template</code>, WordPress <code>body.single-post</code>, or a generic <code>&lt;article&gt;</code>) and injects a trigger button automatically. No per-post markup required.</p>
+    </section>
+
+    <section>
+      <h2>What it ships with</h2>
+      <ul class="features">
+        <li><strong>Adjustable WPM</strong> — 100 to 1000 words per minute, live.</li>
+        <li><strong>Light + dark theme</strong> — follows <code>prefers-color-scheme</code> or toggle manually.</li>
+        <li><strong>Shadow DOM isolation</strong> — your host CSS can't break it, its CSS can't leak into yours.</li>
+        <li><strong>Full keyboard nav</strong> — Space, ←, →, R, Esc.</li>
+        <li><strong>aria-live announcements</strong> — sentence-level, never word-by-word.</li>
+        <li><strong>WCAG AA contrast</strong> — verified in CI with an automated contrast check.</li>
+        <li><strong>prefers-reduced-motion</strong> — transitions disabled when the OS asks.</li>
+        <li><strong>Overlay mode</strong> — focused modal with focus-trap for distraction-free reading.</li>
+        <li><strong>Per-page opt-out</strong> — meta tag, html attribute, body class, or window flag.</li>
+        <li><strong>Tested</strong> — 28-case Playwright suite covers every flow.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Where it works</h2>
+      <ul class="features">
+        <li><a href="./ghost.html">▶ Ghost CMS demo</a></li>
+        <li><a href="./wordpress.html">▶ WordPress demo</a></li>
+        <li><a href="./generic.html">▶ Generic article demo</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>
+        <strong>speed-reader-widget</strong> — built by Alex Rosewarne.
+        Source under the <a href="https://github.com/lexi2/speed-reader-widget/blob/main/LICENSE">Functional Source License</a>.
+        For commercial use, multi-site licensing, or white-label, see <a href="https://github.com/lexi2/speed-reader-widget/blob/main/COMMERCIAL.md">COMMERCIAL.md</a>.
+      </p>
+    </footer>
+  </main>
+
+  <script src="./rsvp-reader.iife.js" defer></script>
+</body>
+</html>

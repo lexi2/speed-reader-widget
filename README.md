@@ -1,6 +1,12 @@
-# RSVP Reader Widget
+# speed-reader-widget
+
+[![CI](https://github.com/lexi2/speed-reader-widget/actions/workflows/ci.yml/badge.svg)](https://github.com/lexi2/speed-reader-widget/actions/workflows/ci.yml)
+[![Demo](https://img.shields.io/badge/demo-live-2546f0)](https://lexi2.github.io/speed-reader-widget/)
+[![License: FSL-1.1-MIT](https://img.shields.io/badge/license-FSL--1.1--MIT-blue)](LICENSE)
 
 An embeddable Rapid Serial Visual Presentation reader for any blog or article-based CMS. Reads articles one word at a time at a user-chosen speed.
+
+**Live demo:** [lexi2.github.io/speed-reader-widget](https://lexi2.github.io/speed-reader-widget/)
 
 ## Embed (single-script auto-install)
 
