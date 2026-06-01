@@ -83,3 +83,14 @@ Manual checks not covered by automation (screen reader, Reduce Motion, real CMS 
 
 - v1: core RSVP, controls, theming, accessibility, single-script auto-install (Ghost first; WordPress + generic adapters present).
 - v1.1 (planned): Service Worker offline support, WordPress adapter polish, bundle-size CI check.
+
+## License
+
+`speed-reader-widget` is distributed under the [Functional Source License (FSL-1.1-MIT)](LICENSE) — source-available, with a free-to-use grant for non-competing purposes. Each released version converts to MIT on its second anniversary.
+
+In plain English:
+- ✅ Read, study, modify the source freely.
+- ✅ Embed the widget on a site you personally own (commercial or not) — this is "internal use" and is a Permitted Purpose.
+- ❌ Bundle this widget in your own product and resell it, host it as a managed service to third parties, or otherwise build a competing offering on top of it without a commercial license.
+
+For commercial licensing (multi-site, white-label, OEM, enterprise self-host), see [COMMERCIAL.md](COMMERCIAL.md) or email **alex@rosewarneconsulting.com.au**.
