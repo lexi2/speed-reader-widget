@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] — 2026-06-01
+
+### Fixed
+- **Adjacent text nodes fused into single words at `<br>` and block boundaries.** Discovered on thegrazier.com.au: an article with `<p>...review."<br>"Concerned stakeholders...</p>` was being read as the token `review."Concerned`. Root cause is a long-standing `textContent` gotcha — it concatenates descendant text nodes without inserting any whitespace at element edges. The parser now injects a space text node after every `<br>` and at the end of every block-boundary element (`p`, `div`, `section`, `article`, `main`, `aside`, `header`, `footer`, `h1`–`h6`, `li`, `ul`, `ol`, `dl`, `dt`, `dd`, `blockquote`, `tr`, `td`, `th`, `figure`, `figcaption`, `hr`) before reading `textContent`. The tokenizer's existing `/\s+/g → ' '` step collapses any resulting double spaces.
+- Four new regression tests in `parser-word-boundaries.spec.ts` cover `<br>`, adjacent block elements with no source whitespace, consecutive `<br>`s, and inline-element non-regression.
+
 ## [0.2.1] — 2026-06-01
 
 ### Fixed

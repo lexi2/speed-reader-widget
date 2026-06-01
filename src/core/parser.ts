@@ -22,6 +22,16 @@ const STRIP_TAGS = new Set([
 const HIDDEN_ATTR_SELECTOR =
   '[hidden], [aria-hidden="true"], [role="presentation"], [role="none"]';
 
+// Elements whose end-of-content marks a word boundary. Without this,
+// `<p>One</p><p>Two</p>` produces textContent="OneTwo" (no space), and
+// `<p>review.<br>Concerned</p>` produces "review.Concerned". We append a
+// single space inside each of these before reading textContent so adjacent
+// chunks can't fuse.
+const BLOCK_BOUNDARY_TAGS =
+  'p, div, section, article, main, aside, header, footer, ' +
+  'h1, h2, h3, h4, h5, h6, li, ul, ol, dl, dt, dd, ' +
+  'blockquote, tr, td, th, figure, figcaption, hr';
+
 export function parse(source: string | Element): ParsedText {
   try {
     const raw = typeof source === 'string' ? source : extractText(source);
@@ -65,6 +75,16 @@ function extractText(root: Element): string {
   // 3. Hidden / presentational
   for (const el of Array.from(clone.querySelectorAll(HIDDEN_ATTR_SELECTOR))) {
     el.remove();
+  }
+
+  // 4. Inject word-boundary whitespace at block edges and after every <br>
+  //    so textContent doesn't fuse adjacent chunks ("review.Concerned").
+  const doc = clone.ownerDocument ?? document;
+  for (const br of Array.from(clone.querySelectorAll('br'))) {
+    br.parentNode?.insertBefore(doc.createTextNode(' '), br.nextSibling);
+  }
+  for (const block of Array.from(clone.querySelectorAll(BLOCK_BOUNDARY_TAGS))) {
+    block.appendChild(doc.createTextNode(' '));
   }
 
   return clone.textContent ?? '';
