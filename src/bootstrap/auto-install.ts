@@ -4,6 +4,7 @@ import { existingReaderOnPage, isOptedOut } from './opt-out';
 import { readScriptConfig } from './script-config';
 import { buildTrigger } from '../ui/TriggerButton';
 import { setLocale } from '../i18n';
+import { reportError } from '../observability/errors';
 
 let installed = false;
 
@@ -36,9 +37,6 @@ export function autoInstall(): void {
 
     buildTrigger(article, config, insertion);
   } catch (err) {
-    // Never let the widget break the host page.
-    if (typeof console !== 'undefined') {
-      console.warn('[rsvp-reader] auto-install failed:', err);
-    }
+    reportError(err, 'auto-install');
   }
 }

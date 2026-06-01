@@ -1,4 +1,5 @@
 import type { ParsedText } from './types';
+import { reportError } from '../observability/errors';
 
 const STRIP_TAGS = new Set([
   'SCRIPT', 'STYLE', 'NOSCRIPT', 'CODE', 'PRE',
@@ -8,9 +9,14 @@ const STRIP_TAGS = new Set([
 ]);
 
 export function parse(source: string | Element): ParsedText {
-  const raw = typeof source === 'string' ? source : extractText(source);
-  const words = tokenize(raw);
-  return { words, wordCount: words.filter(w => w.length > 0).length };
+  try {
+    const raw = typeof source === 'string' ? source : extractText(source);
+    const words = tokenize(raw);
+    return { words, wordCount: words.filter(w => w.length > 0).length };
+  } catch (err) {
+    reportError(err, 'parser');
+    return { words: [], wordCount: 0 };
+  }
 }
 
 function extractText(root: Element): string {

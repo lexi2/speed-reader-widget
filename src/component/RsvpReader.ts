@@ -11,6 +11,7 @@ import { mountOverlay } from '../ui/Overlay';
 import { mountKeyboard } from '../a11y/keyboard';
 import { mountLiveRegion } from '../a11y/live-region';
 import { t, setLocale } from '../i18n';
+import { reportError } from '../observability/errors';
 
 const ATTR = {
   TEXT: 'text',
@@ -36,6 +37,14 @@ export class RsvpReader extends HTMLElement {
     if (this.connected) return;
     this.connected = true;
 
+    try {
+      this.mount();
+    } catch (err) {
+      reportError(err, 'connectedCallback');
+    }
+  }
+
+  private mount(): void {
     this.root = this.attachShadow({ mode: 'open' });
     this.root.innerHTML = buildTemplate();
 

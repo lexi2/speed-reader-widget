@@ -1,6 +1,7 @@
 import { tickDelayMs } from './parser';
 import type { Store } from './state';
 import type { ReaderState } from './types';
+import { reportError } from '../observability/errors';
 
 export class Scheduler {
   private timer: number | null = null;
@@ -69,15 +70,22 @@ export class Scheduler {
     const delay = tickDelayMs(word, baseMs);
     this.timer = window.setTimeout(() => {
       this.timer = null;
-      const state = this.store.get();
-      if (state.status !== 'playing') return;
-      const nextIdx = state.idx + 1;
-      if (nextIdx >= state.words.length) {
-        this.store.set({ idx: state.idx, status: 'done' });
-        return;
+      try {
+        const state = this.store.get();
+        if (state.status !== 'playing') return;
+        const nextIdx = state.idx + 1;
+        if (nextIdx >= state.words.length) {
+          this.store.set({ idx: state.idx, status: 'done' });
+          return;
+        }
+        this.store.set({ idx: nextIdx });
+        this.scheduleNext();
+      } catch (err) {
+        // An async error here would otherwise be invisible — surface it
+        // and stop ticking instead of looping into a broken state.
+        reportError(err, 'scheduler-tick');
+        this.store.set({ status: 'paused' });
       }
-      this.store.set({ idx: nextIdx });
-      this.scheduleNext();
     }, delay);
   }
 }

@@ -90,6 +90,33 @@ Manual checks not covered by automation (screen reader, Reduce Motion, real CMS 
 - v1: core RSVP, controls, theming, accessibility, single-script auto-install (Ghost first; WordPress + generic adapters present).
 - v1.1 (planned): Service Worker offline support, WordPress adapter polish, bundle-size CI check.
 
+## Observability
+
+The widget emits `rsvp:error` `CustomEvent`s on `document` whenever it catches a recoverable error internally. Wire these to whichever error tracker your host site already uses — Sentry, Rollbar, Bugsnag, a custom endpoint — without adding bytes to the widget bundle.
+
+```js
+// Sentry example — drop into your existing site-wide Sentry init
+document.addEventListener('rsvp:error', (e) => {
+  const { widget, version, context, error } = e.detail;
+  Sentry.captureException(error, {
+    tags: { widget, version, context },
+  });
+});
+```
+
+Event detail shape:
+
+```ts
+{
+  widget: 'rsvp-reader',
+  version: '0.1.0',
+  context: 'parser' | 'scheduler-tick' | 'connectedCallback' | 'auto-install',
+  error: unknown,
+}
+```
+
+This boundary contract is verified by an automated test (`tests/e2e/error-events.spec.ts`) so we don't break it accidentally.
+
 ## Hosting & offline behavior
 
 The widget is designed to **work offline after first load**: once a visitor has the bundle in their browser cache, the widget runs without any network round-trip (the article text is already in the host page's DOM, and the widget itself never fetches anything else).
