@@ -1,6 +1,6 @@
 {
   "name": "speed-reader-widget",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Embeddable RSVP (Rapid Serial Visual Presentation) reader widget. Single-script auto-install for Ghost, WordPress, Substack, and any CMS.",
   "type": "module",
   "main": "dist/rsvp-reader.js",

@@ -129,9 +129,26 @@ export class RsvpReader extends HTMLElement {
     }
   }
 
-  /** Public API: imperatively set the text to read */
-  setText(text: string): void {
-    const parsed = parse(text);
+  /** Public API: snapshot of the words currently loaded for playback. */
+  getParsedWords(): readonly string[] {
+    return this.store ? [...this.store.get().words] : [];
+  }
+
+  /** Public API: snapshot of reader state for analytics / debugging. */
+  getStatus(): { idx: number; total: number; wpm: number; status: string } {
+    if (!this.store) return { idx: 0, total: 0, wpm: 0, status: 'idle' };
+    const s = this.store.get();
+    return { idx: s.idx, total: s.totalWords, wpm: s.wpm, status: s.status };
+  }
+
+  /**
+   * Public API: imperatively set the source to read. Accepts either a raw
+   * string (already-cleaned prose) or a DOM Element to parse. When given an
+   * Element, the parser runs its full strip pass — non-prose tags, custom
+   * elements (ads / embeds), and hidden subtrees are all excluded.
+   */
+  setText(source: string | Element): void {
+    const parsed = parse(source);
     this.scheduler.setWords(parsed.words);
     this.renderStates();
   }

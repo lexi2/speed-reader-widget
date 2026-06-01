@@ -52,11 +52,13 @@ function openReader(article: Element, trigger: HTMLButtonElement, config: RsvpCo
     trigger.insertAdjacentElement('afterend', reader);
   }
 
-  // Hand off the article text after the element is connected so attribute
-  // observation has fired and the shadow root exists.
+  // Hand off the article *element* (not its textContent) so the parser can
+  // run its full strip pass — buttons, custom elements (ad slots), hidden
+  // subtrees, scripts, etc. Calling setText with the string textContent
+  // would smuggle all of that straight into the word stream.
   requestAnimationFrame(() => {
     if (typeof reader.setText === 'function') {
-      reader.setText(article.textContent ?? '');
+      reader.setText(article);
     } else {
       reader.setAttribute('source-selector', getSelector(article));
     }

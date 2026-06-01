@@ -87,7 +87,7 @@ Manual checks not covered by automation (screen reader, Reduce Motion, real CMS 
 
 ## Status
 
-Current release: **v0.2.0** ([changelog](CHANGELOG.md)).
+Current release: **v0.2.1** ([changelog](CHANGELOG.md)).
 
 - v0.1: core RSVP, controls, theming, accessibility, single-script auto-install (Ghost + WordPress + generic).
 - v0.2: Substack adapter, WordPress block-theme support, `rsvp:error` observability hook, offline-after-init verification, CI + GitHub Pages demo.
@@ -128,7 +128,7 @@ To make this real in production, host the JS at a **versioned URL** and serve it
 
 ```
 # Versioned URL — change the version segment when you ship a new release
-https://your-cdn.example.com/v0.2.0/rsvp-reader.iife.js
+https://your-cdn.example.com/v0.2.1/rsvp-reader.iife.js
 
 # Recommended CDN response headers
 Cache-Control: public, max-age=31536000, immutable
@@ -142,13 +142,13 @@ Three free, immutable, public paths are available out of the box once the packag
 
 ```html
 <!-- unpkg, version-pinned -->
-<script src="https://unpkg.com/speed-reader-widget@0.2.0" defer></script>
+<script src="https://unpkg.com/speed-reader-widget@0.2.1" defer></script>
 
 <!-- jsDelivr, version-pinned -->
-<script src="https://cdn.jsdelivr.net/npm/speed-reader-widget@0.2.0" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/speed-reader-widget@0.2.1" defer></script>
 
 <!-- ESM via esm.sh -->
-<script type="module" src="https://esm.sh/speed-reader-widget@0.2.0"></script>
+<script type="module" src="https://esm.sh/speed-reader-widget@0.2.1"></script>
 ```
 
 `immutable` tells browsers they can keep the file forever without revalidation; site owners switch to a new version by pointing the `<script src>` at the new path. CDNs that work well for this: Cloudflare R2 + Cache Rules, AWS S3 + CloudFront, Bunny.net, Fastly, or even GitHub Pages for low-traffic free hosting.

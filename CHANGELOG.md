@@ -3,6 +3,19 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] — 2026-06-01
+
+### Fixed
+- **Parser leaks textContent from custom elements (ad slots, embeds).** Discovered by deploying v0.2.0 to a real Ghost(Pro) site running Broadstreet ads — `<broadstreet-zone-container>` text (script source, internal IDs) was being read out by the widget. The parser's strip pass now removes any tag whose name contains a hyphen (which is the entire HTML custom-element namespace), plus `[hidden]`, `[aria-hidden="true"]`, and `[role="presentation"]` subtrees. Three regression tests pin the behaviour, including one that mirrors the exact production Broadstreet markup.
+- **TriggerButton was passing `article.textContent` (a string) to the reader**, which bypassed the parser's strip pass entirely. It now passes the article element directly so the full extract pipeline runs. Same fix benefits the trigger-button itself (no longer leaks the "Read faster" label into the word stream).
+
+### Added
+- **`RsvpReader.getParsedWords()`** and **`RsvpReader.getStatus()`** public methods for analytics and tests. Returns a snapshot of the word list and current playback state respectively.
+
+### Changed
+- **`setText(source: string | Element)`** — `setText` now accepts a DOM element in addition to a string. The element path runs the full strip pipeline.
+- Expanded the parser's strip list: `TEMPLATE`, `SLOT`, `KBD`, `SAMP`, `VAR`, `PICTURE`, `VIDEO`, `AUDIO`, `CANVAS`, `DIALOG`. Removed `FIGURE` from the strip list (kept `FIGCAPTION` only).
+
 ## [0.2.0] — 2026-06-01
 
 ### Added

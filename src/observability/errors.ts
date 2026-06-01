@@ -11,7 +11,7 @@
  *   { error: unknown, context: string, version: string, widget: 'rsvp-reader' }
  */
 
-const WIDGET_VERSION = '0.2.0';
+const WIDGET_VERSION = '0.2.1';
 
 export interface RsvpErrorDetail {
   widget: 'rsvp-reader';
