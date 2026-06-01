@@ -1,0 +1,25 @@
+{
+  "name": "rsvp-reader",
+  "version": "0.1.0",
+  "description": "Embeddable RSVP (Rapid Serial Visual Presentation) reader widget. Single-script auto-install for Ghost, WordPress, and generic CMS sites.",
+  "type": "module",
+  "main": "dist/rsvp-reader.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "size": "gzip -c dist/rsvp-reader.iife.js | wc -c",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "terser": "^5.48.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.2.0"
+  }
+}
