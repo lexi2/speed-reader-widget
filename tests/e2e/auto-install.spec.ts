@@ -3,6 +3,9 @@ import { test, expect } from '@playwright/test';
 const fixtures = [
   { name: 'ghost', url: '/ghost-post-fixture.html', articleSelector: '.gh-content' },
   { name: 'wordpress', url: '/wordpress-post-fixture.html', articleSelector: '.entry-content' },
+  { name: 'wordpress-block-theme', url: '/wordpress-block-theme-fixture.html', articleSelector: '.wp-block-post-content' },
+  { name: 'substack', url: '/substack-post-fixture.html', articleSelector: '.available-content' },
+  { name: 'jekyll', url: '/jekyll-post-fixture.html', articleSelector: '.post-content' },
   { name: 'generic', url: '/generic-article-fixture.html', articleSelector: '[itemprop="articleBody"]' },
   { name: 'dev-harness', url: '/', articleSelector: '.gh-content' },
 ];
