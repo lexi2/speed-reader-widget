@@ -30,6 +30,16 @@ Tiered pricing is available for:
 
 Contact for a quote: **alex@rosewarneconsulting.com.au**
 
+## Premium add-ons
+
+These extend the base widget. They are not in the open distribution and are made available to commercial-licensed customers on request:
+
+- **Service Worker offline pack** — PWA-style offline support, cross-page article preloading, offline indicator UI. Useful for newsrooms with mobile audiences on intermittent connections.
+- **Analytics adapter** — anonymized aggregate read-rate / completion-rate metrics, exportable to Plausible / Fathom / a private endpoint.
+- **Theming kit** — branded colours, custom fonts (including dyslexia-friendly OpenDyslexic / Lexie Readable), per-publication CSS variable presets.
+- **Sentry / observability hook** — opt-in error reporting plumbed into the widget with a configurable DSN.
+- **Additional CMS adapters** — Substack, Medium-style, Jekyll, Hugo, or any custom CMS on request.
+
 ## How it's enforced
 
 The license is the legal mechanism. There is no DRM or telemetry in the widget. We rely on good-faith compliance and, where necessary, the courts of the jurisdiction set out in any commercial agreement.

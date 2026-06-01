@@ -90,6 +90,28 @@ Manual checks not covered by automation (screen reader, Reduce Motion, real CMS 
 - v1: core RSVP, controls, theming, accessibility, single-script auto-install (Ghost first; WordPress + generic adapters present).
 - v1.1 (planned): Service Worker offline support, WordPress adapter polish, bundle-size CI check.
 
+## Hosting & offline behavior
+
+The widget is designed to **work offline after first load**: once a visitor has the bundle in their browser cache, the widget runs without any network round-trip (the article text is already in the host page's DOM, and the widget itself never fetches anything else).
+
+To make this real in production, host the JS at a **versioned URL** and serve it with immutable cache headers:
+
+```
+# Versioned URL — change the version segment when you ship a new release
+https://your-cdn.example.com/v0.1.0/rsvp-reader.iife.js
+
+# Recommended CDN response headers
+Cache-Control: public, max-age=31536000, immutable
+Access-Control-Allow-Origin: *
+Content-Type: application/javascript; charset=utf-8
+```
+
+`immutable` tells browsers they can keep the file forever without revalidation; site owners switch to a new version by pointing the `<script src>` at the new path. CDNs that work well for this: Cloudflare R2 + Cache Rules, AWS S3 + CloudFront, Bunny.net, Fastly, or even GitHub Pages for low-traffic free hosting.
+
+**Verified by automated test:** `tests/e2e/offline.spec.ts` boots the widget, cuts the network, and asserts that (a) playback continues to advance, (b) controls remain responsive, and (c) zero network requests fire after the cutover.
+
+For richer offline scenarios (PWA installs, cross-page article preloading, offline indicator UI), a Service Worker is available as a paid premium add-on — see [COMMERCIAL.md](COMMERCIAL.md).
+
 ## License
 
 `speed-reader-widget` is distributed under the [Functional Source License (FSL-1.1-MIT)](LICENSE) — source-available, with a free-to-use grant for non-competing purposes. Each released version converts to MIT on its second anniversary.
