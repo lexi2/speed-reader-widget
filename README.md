@@ -32,6 +32,8 @@ Add one tag once to your theme's footer (Ghost: Code Injection → Site Footer; 
 | `data-source-selector` | _adapter default_ | Any CSS selector |
 | `data-position` | `before` | `before`, `after` |
 | `data-lang` | `en` | Locale code |
+| `data-accent` | _theme default_ | Any CSS colour (e.g. `#8b5cf6`) — applied with WCAG contrast guard |
+| `data-font` | `sans` | `sans`, `serif`, `mono`, `dyslexic` |
 
 ### Per-page opt-out
 
@@ -52,12 +54,75 @@ Drop a `<rsvp-reader>` element anywhere and auto-injection is skipped for that p
 
 ## Theming
 
-The widget exposes CSS custom properties at the `rsvp-reader` element. Site owners can override from outside the shadow root:
+### Script-tag options
+
+Set accent colour and font without writing CSS:
+
+```html
+<script
+  src="https://your-cdn.example.com/rsvp-reader.iife.js"
+  data-accent="#8b5cf6"
+  data-font="serif"
+  defer
+></script>
+```
+
+`data-accent` applies `--rsvp-accent` on the host element. If the chosen colour fails WCAG AA contrast against white button text, the widget automatically switches to dark on-accent text.
+
+`data-font` accepts `sans` (default), `serif`, `mono`, or `dyslexic`. The dyslexic option lazy-loads [Atkinson Hyperlegible](https://brailleinstitute.org/freefont) from `fonts/atkinson-hyperlegible-latin.woff2` alongside your widget bundle.
+
+### CSS custom property overrides
+
+The widget exposes design tokens at the `rsvp-reader` element. Site owners can override any token from outside the shadow root:
+
+| Token | Default (light) | Purpose |
+|---|---|---|
+| `--rsvp-bg` | `#ffffff` | Widget background |
+| `--rsvp-fg` | `#18181b` | Primary text |
+| `--rsvp-muted` | `#71717a` | Meta line, secondary text |
+| `--rsvp-surface` | `#f4f4f5` | Stage background |
+| `--rsvp-border` | `#e4e4e7` | Borders, progress track |
+| `--rsvp-accent` | `#2563eb` | Buttons, progress bar, guides |
+| `--rsvp-on-accent` | `#ffffff` | Text on accent surfaces |
+| `--rsvp-orp` | `#dc2626` | Optimal recognition point highlight |
+| `--rsvp-focus` | `#2563eb` | Focus ring |
+| `--rsvp-radius` | `12px` | Outer border radius |
+| `--rsvp-radius-sm` | `8px` | Button border radius |
+| `--rsvp-word-size` | `clamp(2rem, 6vw, 3.5rem)` | RSVP word display size |
+
+Dark theme values are set automatically when `data-theme="dark"` resolves on the host.
+
+**Warm neutrals** — earthy background with a terracotta accent:
+
+```css
+rsvp-reader {
+  --rsvp-bg: #faf7f2;
+  --rsvp-fg: #2c2416;
+  --rsvp-surface: #f0ebe3;
+  --rsvp-accent: #c45c3e;
+  --rsvp-orp: #b45309;
+}
+```
+
+**High contrast** — maximum legibility for low-vision readers:
+
+```css
+rsvp-reader {
+  --rsvp-bg: #000000;
+  --rsvp-fg: #ffffff;
+  --rsvp-muted: #d4d4d4;
+  --rsvp-accent: #ffff00;
+  --rsvp-orp: #00ffff;
+  --rsvp-on-accent: #000000;
+}
+```
+
+**Brand-matched accent** — keep default chrome, swap only the accent:
 
 ```css
 rsvp-reader {
   --rsvp-accent: #8b5cf6;
-  --rsvp-orp: #f97316;
+  --rsvp-focus: #8b5cf6;
 }
 ```
 
@@ -67,6 +132,7 @@ rsvp-reader {
 |---|---|
 | Space | Play / pause |
 | ← / → | Decrease / increase WPM by 25 |
+| Shift + ← / → | Skip back / forward 10 words |
 | R | Restart |
 | Esc | Exit |
 
@@ -79,7 +145,7 @@ npx playwright install chromium   # one-time
 npm run dev      # dev server with the included fixtures
 npm run build    # production build → dist/
 npm run size     # gzip size of the IIFE bundle (target < 30 KB)
-npm test         # Playwright e2e suite (26 tests)
+npm test         # Playwright e2e suite (64 tests)
 npm run test:ui  # Playwright UI mode for debugging
 ```
 

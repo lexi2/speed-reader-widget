@@ -14,6 +14,11 @@ export function buildTemplate(): string {
   </div>
   <div class="meta" part="meta">
     <span class="meta__status" data-meta="status"></span>
+    <span class="meta__time" data-meta="time">
+      <span data-meta="time-elapsed"></span>
+      <span class="meta__time-sep" aria-hidden="true">/</span>
+      <span data-meta="time-remaining"></span>
+    </span>
     <span class="meta__wpm" data-meta="wpm"></span>
   </div>
   <div class="progress" part="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Reading progress">

@@ -1,6 +1,7 @@
 export type ReaderStatus = 'idle' | 'playing' | 'paused' | 'done';
 export type ThemePreference = 'light' | 'dark' | 'auto';
 export type LaunchMode = 'inline' | 'overlay';
+export type FontPreference = 'sans' | 'serif' | 'mono' | 'dyslexic';
 
 export interface ReaderState {
   idx: number;
@@ -23,6 +24,8 @@ export interface RsvpConfig {
   sourceSelector: string | null;
   position: 'before' | 'after';
   lang: string;
+  accent: string | null;
+  font: FontPreference;
 }
 
 export const DEFAULT_CONFIG: RsvpConfig = {
@@ -32,6 +35,8 @@ export const DEFAULT_CONFIG: RsvpConfig = {
   sourceSelector: null,
   position: 'before',
   lang: 'en',
+  accent: null,
+  font: 'sans',
 };
 
 export const WPM_MIN = 100;

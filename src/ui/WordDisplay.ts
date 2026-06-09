@@ -1,6 +1,7 @@
 import { findOrpIndex } from '../core/parser';
-import type { Store } from '../core/state';
+import { secondsElapsed, secondsRemaining, type Store } from '../core/state';
 import type { ReaderState } from '../core/types';
+import { formatTime } from '../utils/format-time';
 
 export function mountWordDisplay(root: ShadowRoot, store: Store<ReaderState>): () => void {
   const pre = root.querySelector('.word .pre') as HTMLElement | null;
@@ -10,6 +11,8 @@ export function mountWordDisplay(root: ShadowRoot, store: Store<ReaderState>): (
   const progress = root.querySelector('.progress') as HTMLElement | null;
   const wpmMeta = root.querySelector('[data-meta="wpm"]') as HTMLElement | null;
   const statusMeta = root.querySelector('[data-meta="status"]') as HTMLElement | null;
+  const timeElapsedMeta = root.querySelector('[data-meta="time-elapsed"]') as HTMLElement | null;
+  const timeRemainingMeta = root.querySelector('[data-meta="time-remaining"]') as HTMLElement | null;
 
   if (!pre || !orp || !post) return () => {};
 
@@ -33,6 +36,8 @@ export function mountWordDisplay(root: ShadowRoot, store: Store<ReaderState>): (
       progress.setAttribute('aria-valuenow', String(pct));
     }
     if (wpmMeta) wpmMeta.textContent = `${state.wpm} wpm`;
+    if (timeElapsedMeta) timeElapsedMeta.textContent = formatTime(secondsElapsed(state));
+    if (timeRemainingMeta) timeRemainingMeta.textContent = formatTime(secondsRemaining(state));
     if (statusMeta) {
       const labels: Record<ReaderState['status'], string> = {
         idle: 'Ready',

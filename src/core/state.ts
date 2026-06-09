@@ -45,3 +45,17 @@ export function createReaderStore(initial: Partial<ReaderState> = {}): Store<Rea
     ...initial,
   });
 }
+
+/** Seconds left at current WPM (recomputed on every idx/wpm change). */
+export function secondsRemaining(state: ReaderState): number | null {
+  if (state.totalWords === 0) return null;
+  if (state.status === 'done') return 0;
+  const wordsLeft = state.totalWords - state.idx;
+  return (wordsLeft / state.wpm) * 60;
+}
+
+/** Seconds elapsed for words completed before the current index. */
+export function secondsElapsed(state: ReaderState): number | null {
+  if (state.totalWords === 0) return null;
+  return (state.idx / state.wpm) * 60;
+}

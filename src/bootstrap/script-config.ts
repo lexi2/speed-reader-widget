@@ -1,4 +1,4 @@
-import type { RsvpConfig, ThemePreference, LaunchMode } from '../core/types';
+import type { RsvpConfig, ThemePreference, LaunchMode, FontPreference } from '../core/types';
 import { DEFAULT_CONFIG, WPM_MAX, WPM_MIN } from '../core/types';
 
 declare global {
@@ -21,8 +21,14 @@ export function readScriptConfig(): RsvpConfig {
   const sourceSelector = script.dataset.sourceSelector?.trim() || null;
   const position = script.dataset.position === 'after' ? 'after' : 'before';
   const lang = script.dataset.lang?.trim() || DEFAULT_CONFIG.lang;
+  const accent = script.dataset.accent?.trim() || null;
+  const font = isFont(script.dataset.font) ? script.dataset.font : DEFAULT_CONFIG.font;
 
-  return { wpm, theme, mode, sourceSelector, position, lang };
+  return { wpm, theme, mode, sourceSelector, position, lang, accent, font };
+}
+
+function isFont(v: string | undefined): v is FontPreference {
+  return v === 'sans' || v === 'serif' || v === 'mono' || v === 'dyslexic';
 }
 
 function findOwnScriptTag(): HTMLScriptElement | null {
@@ -40,7 +46,9 @@ function findOwnScriptTag(): HTMLScriptElement | null {
 
 function isOurScript(s: HTMLScriptElement): boolean {
   const src = s.src || '';
-  return /rsvp-reader(?:\.iife)?\.js(?:\?|$)/.test(src) || s.dataset.rsvpReader !== undefined;
+  return /rsvp-reader(?:\.iife)?\.js(?:\?|$)/.test(src)
+    || /\/src\/index\.ts(?:\?|$)/.test(src)
+    || s.dataset.rsvpReader !== undefined;
 }
 
 function isTheme(v: string | undefined): v is ThemePreference {

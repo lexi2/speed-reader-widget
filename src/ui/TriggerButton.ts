@@ -45,6 +45,8 @@ function openReader(article: Element, trigger: HTMLButtonElement, config: RsvpCo
   reader.setAttribute('theme', config.theme);
   reader.setAttribute('mode', config.mode);
   reader.setAttribute('lang', config.lang);
+  if (config.accent) reader.setAttribute('accent', config.accent);
+  if (config.font !== 'sans') reader.setAttribute('font', config.font);
 
   if (config.mode === 'overlay') {
     document.body.appendChild(reader);

@@ -23,11 +23,19 @@ export function mountKeyboard(
         break;
       case 'ArrowRight':
         e.preventDefault();
-        scheduler.setWpm(Math.min(WPM_MAX, store.get().wpm + WPM_STEP));
+        if (e.shiftKey) {
+          scheduler.seek(store.get().idx + 10);
+        } else {
+          scheduler.setWpm(Math.min(WPM_MAX, store.get().wpm + WPM_STEP));
+        }
         break;
       case 'ArrowLeft':
         e.preventDefault();
-        scheduler.setWpm(Math.max(WPM_MIN, store.get().wpm - WPM_STEP));
+        if (e.shiftKey) {
+          scheduler.seek(store.get().idx - 10);
+        } else {
+          scheduler.setWpm(Math.max(WPM_MIN, store.get().wpm - WPM_STEP));
+        }
         break;
       case 'r':
       case 'R':

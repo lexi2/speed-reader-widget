@@ -11,8 +11,10 @@
 
   --rsvp-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --rsvp-font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --rsvp-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
+  --rsvp-font-dyslexic: "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
 
   --rsvp-radius: 12px;
   --rsvp-radius-sm: 8px;
@@ -35,6 +37,21 @@
   --rsvp-on-accent: #ffffff;
   --rsvp-orp: #f87171;
   --rsvp-focus: #2546f0;
+}
+
+:host([data-font="serif"]) {
+  --rsvp-font-sans: var(--rsvp-font-serif);
+}
+:host([data-font="mono"]) {
+  --rsvp-font-sans: var(--rsvp-font-mono);
+}
+:host([data-font="dyslexic"]) {
+  --rsvp-font-sans: var(--rsvp-font-dyslexic);
+}
+:host([data-font="serif"]) .word,
+:host([data-font="mono"]) .word,
+:host([data-font="dyslexic"]) .word {
+  font-family: var(--rsvp-font-sans);
 }
 
 @media (prefers-reduced-motion: reduce) {

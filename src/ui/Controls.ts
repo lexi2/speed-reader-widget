@@ -7,7 +7,7 @@ import { icons } from './icons';
 import { t } from '../i18n';
 
 interface ButtonSpec {
-  key: 'play' | 'slower' | 'faster' | 'restart' | 'theme' | 'exit';
+  key: 'play' | 'slower' | 'faster' | 'skipBack' | 'skipForward' | 'restart' | 'theme' | 'exit';
   ariaKey: string;
   ariaShortcut?: string;
   primary?: boolean;
@@ -18,6 +18,8 @@ const buttons: ButtonSpec[] = [
   { key: 'play', ariaKey: 'control.play', ariaShortcut: 'Space', primary: true, icon: 'play' },
   { key: 'slower', ariaKey: 'control.slower', ariaShortcut: 'ArrowLeft', icon: 'slower' },
   { key: 'faster', ariaKey: 'control.faster', ariaShortcut: 'ArrowRight', icon: 'faster' },
+  { key: 'skipBack', ariaKey: 'control.skipBack', ariaShortcut: 'Shift+ArrowLeft', icon: 'skipBack' },
+  { key: 'skipForward', ariaKey: 'control.skipForward', ariaShortcut: 'Shift+ArrowRight', icon: 'skipForward' },
   { key: 'restart', ariaKey: 'control.restart', ariaShortcut: 'R', icon: 'restart' },
   { key: 'theme', ariaKey: 'control.theme', icon: 'sun' },
   { key: 'exit', ariaKey: 'control.exit', ariaShortcut: 'Escape', icon: 'exit' },
@@ -57,6 +59,12 @@ export function mountControls(
         break;
       case 'faster':
         scheduler.setWpm(Math.min(WPM_MAX, state.wpm + WPM_STEP));
+        break;
+      case 'skipBack':
+        scheduler.seek(state.idx - 10);
+        break;
+      case 'skipForward':
+        scheduler.seek(state.idx + 10);
         break;
       case 'restart':
         scheduler.restart();

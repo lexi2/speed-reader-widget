@@ -1,6 +1,7 @@
-import type { Store } from '../core/state';
+import { secondsRemaining, type Store } from '../core/state';
 import type { ReaderState } from '../core/types';
 import { t } from '../i18n';
+import { formatTimeAccessible } from '../utils/format-time';
 
 /**
  * Announces state changes through aria-live without flooding screen readers
@@ -21,8 +22,14 @@ export function mountLiveRegion(root: ShadowRoot, store: Store<ReaderState>): ()
 
   const unsub = store.subscribe((next, prev) => {
     if (next.status !== prev.status) {
-      if (next.status === 'paused') announce(t('state.paused'));
-      else if (next.status === 'done') {
+      if (next.status === 'paused') {
+        const remaining = secondsRemaining(next);
+        if (remaining !== null && remaining > 0) {
+          announce(t('state.pausedWithTime', { time: formatTimeAccessible(remaining) }));
+        } else {
+          announce(t('state.paused'));
+        }
+      } else if (next.status === 'done') {
         if (sentenceBuffer.length) announce(sentenceBuffer.join(' '));
         else announce(t('state.done'));
         sentenceBuffer = [];
@@ -31,6 +38,13 @@ export function mountLiveRegion(root: ShadowRoot, store: Store<ReaderState>): ()
 
     if (next.wpm !== prev.wpm) {
       announce(t('state.wpm', { n: next.wpm }));
+    }
+
+    if (next.idx !== prev.idx && next.status === prev.status) {
+      const jump = next.idx - prev.idx;
+      if (Math.abs(jump) > 1 && Math.abs(jump) <= 10) {
+        announce(t(jump > 0 ? 'state.skippedForward' : 'state.skippedBack'));
+      }
     }
 
     if (next.idx !== prev.idx && next.status === 'playing') {

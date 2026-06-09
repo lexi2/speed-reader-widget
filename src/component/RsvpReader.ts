@@ -1,10 +1,17 @@
 import { Scheduler } from '../core/scheduler';
 import { createReaderStore, Store } from '../core/state';
 import { parse } from '../core/parser';
-import type { LaunchMode, ReaderState, ThemePreference } from '../core/types';
+import type { FontPreference, LaunchMode, ReaderState, ThemePreference } from '../core/types';
 import { DEFAULT_CONFIG, WPM_MAX, WPM_MIN } from '../core/types';
 import { buildTemplate } from './template';
-import { applyTheme, persistThemeChoice, readPersistedTheme, watchSystemTheme } from '../theme/theme';
+import {
+  applyAccent,
+  applyFont,
+  applyTheme,
+  persistThemeChoice,
+  readPersistedTheme,
+  watchSystemTheme,
+} from '../theme/theme';
 import { mountWordDisplay } from '../ui/WordDisplay';
 import { mountControls } from '../ui/Controls';
 import { mountOverlay } from '../ui/Overlay';
@@ -20,11 +27,13 @@ const ATTR = {
   THEME: 'theme',
   MODE: 'mode',
   LANG: 'lang',
+  ACCENT: 'accent',
+  FONT: 'font',
 } as const;
 
 export class RsvpReader extends HTMLElement {
   static get observedAttributes(): string[] {
-    return [ATTR.TEXT, ATTR.SOURCE, ATTR.WPM, ATTR.THEME, ATTR.MODE, ATTR.LANG];
+    return [ATTR.TEXT, ATTR.SOURCE, ATTR.WPM, ATTR.THEME, ATTR.MODE, ATTR.LANG, ATTR.ACCENT, ATTR.FONT];
   }
 
   private root!: ShadowRoot;
@@ -60,6 +69,8 @@ export class RsvpReader extends HTMLElement {
     setLocale(this.getAttribute(ATTR.LANG) ?? DEFAULT_CONFIG.lang);
 
     applyTheme(this, initialTheme);
+    applyAccent(this, this.getAttribute(ATTR.ACCENT));
+    applyFont(this, (this.getAttribute(ATTR.FONT) as FontPreference | null) ?? DEFAULT_CONFIG.font);
     this.setAttribute('data-mode', this.getAttribute(ATTR.MODE) ?? DEFAULT_CONFIG.mode);
 
     // System theme watcher only matters for 'auto'
@@ -125,6 +136,12 @@ export class RsvpReader extends HTMLElement {
         break;
       case ATTR.LANG:
         setLocale(newValue ?? DEFAULT_CONFIG.lang);
+        break;
+      case ATTR.ACCENT:
+        applyAccent(this, newValue);
+        break;
+      case ATTR.FONT:
+        applyFont(this, (newValue as FontPreference | null) ?? DEFAULT_CONFIG.font);
         break;
     }
   }

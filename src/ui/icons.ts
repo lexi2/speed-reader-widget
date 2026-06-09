@@ -6,6 +6,8 @@ export const icons = {
   pause: `<svg ${baseAttrs}><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`,
   faster: `<svg ${baseAttrs}><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>`,
   slower: `<svg ${baseAttrs}><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>`,
+  skipBack: `<svg ${baseAttrs}><polyline points="13 17 8 12 13 7"></polyline><polyline points="20 17 15 12 20 7"></polyline><text x="12" y="16" font-size="7" fill="currentColor" stroke="none" text-anchor="middle" font-weight="700">10</text></svg>`,
+  skipForward: `<svg ${baseAttrs}><polyline points="11 17 16 12 11 7"></polyline><polyline points="4 17 9 12 4 7"></polyline><text x="12" y="16" font-size="7" fill="currentColor" stroke="none" text-anchor="middle" font-weight="700">10</text></svg>`,
   restart: `<svg ${baseAttrs}><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>`,
   exit: `<svg ${baseAttrs}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
   sun: `<svg ${baseAttrs}><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>`,
