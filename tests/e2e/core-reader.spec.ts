@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { startReading } from './helpers';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/ghost-post-fixture.html');
@@ -28,7 +29,7 @@ test('empty-state message is not visible when words are loaded', async ({ page }
 });
 
 test('play -> pause via UI button', async ({ page }) => {
-  // Reader auto-plays on mount via TriggerButton. Pause it first to get a deterministic state.
+  await startReading(page, reader(page));
   await reader(page).evaluate((el: Element) =>
     (el as HTMLElement).shadowRoot
       ?.querySelector<HTMLButtonElement>('button[data-control="play"]')
@@ -87,15 +88,16 @@ test('keyboard: ArrowRight bumps WPM', async ({ page }) => {
 test('keyboard: Space toggles play/pause', async ({ page }) => {
   await reader(page).focus();
   await page.keyboard.press('Space');
+  await page.waitForTimeout(3200);
   const status1 = await reader(page).evaluate((el: Element) =>
     (el as HTMLElement).shadowRoot?.querySelector('[data-meta="status"]')?.textContent,
   );
-  expect(status1).toBe('Paused');
+  expect(status1).toBe('Playing');
   await page.keyboard.press('Space');
   const status2 = await reader(page).evaluate((el: Element) =>
     (el as HTMLElement).shadowRoot?.querySelector('[data-meta="status"]')?.textContent,
   );
-  expect(status2).toBe('Playing');
+  expect(status2).toBe('Paused');
 });
 
 test('keyboard: Escape exits the reader', async ({ page }) => {
@@ -104,18 +106,23 @@ test('keyboard: Escape exits the reader', async ({ page }) => {
   await expect(reader(page)).toHaveCount(0);
 });
 
-test('theme toggle cycles auto -> light -> dark -> auto', async ({ page }) => {
-  const themeOf = async () => reader(page).getAttribute('data-theme');
-  // Auto initially resolves to light or dark depending on system
+test('theme toggle switches between dark and light', async ({ page }) => {
   await reader(page).evaluate((el: Element) =>
     (el as HTMLElement).shadowRoot
-      ?.querySelector<HTMLButtonElement>('button[data-control="theme"]')
+      ?.querySelector<HTMLButtonElement>('button[data-theme-pick="light"]')
       ?.click(),
   );
-  expect(['light', 'dark']).toContain(await themeOf());
+  expect(await reader(page).getAttribute('data-theme')).toBe('light');
+  await reader(page).evaluate((el: Element) =>
+    (el as HTMLElement).shadowRoot
+      ?.querySelector<HTMLButtonElement>('button[data-theme-pick="dark"]')
+      ?.click(),
+  );
+  expect(await reader(page).getAttribute('data-theme')).toBe('dark');
 });
 
 test('progress bar advances as words consume', async ({ page }) => {
+  await startReading(page, reader(page));
   // Make it tick fast so we can observe progression quickly.
   await reader(page).evaluate((el: Element) => {
     const root = (el as HTMLElement).shadowRoot;

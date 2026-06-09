@@ -13,11 +13,27 @@ export function mountWordDisplay(root: ShadowRoot, store: Store<ReaderState>): (
   const statusMeta = root.querySelector('[data-meta="status"]') as HTMLElement | null;
   const timeElapsedMeta = root.querySelector('[data-meta="time-elapsed"]') as HTMLElement | null;
   const timeRemainingMeta = root.querySelector('[data-meta="time-remaining"]') as HTMLElement | null;
+  const countdownEl = root.querySelector('[data-countdown]') as HTMLElement | null;
+  const wordEl = root.querySelector('.word') as HTMLElement | null;
 
   if (!pre || !orp || !post) return () => {};
 
   const render = (state: ReaderState) => {
-    const word = state.words[state.idx] ?? '';
+    const showWords = state.status === 'playing' || state.status === 'paused';
+
+    if (countdownEl && wordEl) {
+      if (state.status === 'countdown' && state.countdown !== null) {
+        countdownEl.hidden = false;
+        countdownEl.textContent = String(state.countdown);
+        wordEl.hidden = true;
+      } else {
+        countdownEl.hidden = true;
+        countdownEl.textContent = '';
+        wordEl.hidden = !showWords;
+      }
+    }
+
+    const word = showWords ? (state.words[state.idx] ?? '') : '';
 
     if (word) {
       const orpIdx = findOrpIndex(word);
@@ -41,6 +57,7 @@ export function mountWordDisplay(root: ShadowRoot, store: Store<ReaderState>): (
     if (statusMeta) {
       const labels: Record<ReaderState['status'], string> = {
         idle: 'Ready',
+        countdown: 'Starting',
         playing: 'Playing',
         paused: 'Paused',
         done: 'Finished',

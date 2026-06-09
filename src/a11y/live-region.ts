@@ -36,6 +36,10 @@ export function mountLiveRegion(root: ShadowRoot, store: Store<ReaderState>): ()
       }
     }
 
+    if (next.status === 'countdown' && next.countdown !== prev.countdown && next.countdown !== null) {
+      announce(String(next.countdown));
+    }
+
     if (next.wpm !== prev.wpm) {
       announce(t('state.wpm', { n: next.wpm }));
     }

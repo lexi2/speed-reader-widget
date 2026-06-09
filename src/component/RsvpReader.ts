@@ -14,6 +14,9 @@ import {
 } from '../theme/theme';
 import { mountWordDisplay } from '../ui/WordDisplay';
 import { mountControls } from '../ui/Controls';
+import { mountStageDone } from '../ui/StageDone';
+import { mountStagePlay } from '../ui/StagePlay';
+import { cancelCountdown } from '../ui/playback';
 import { mountOverlay } from '../ui/Overlay';
 import { mountKeyboard } from '../a11y/keyboard';
 import { mountLiveRegion } from '../a11y/live-region';
@@ -92,6 +95,8 @@ export class RsvpReader extends HTMLElement {
 
     // Mount UI pieces
     this.teardown.push(mountWordDisplay(this.root, this.store));
+    this.teardown.push(mountStagePlay(this.root, this.store, this.scheduler));
+    this.teardown.push(mountStageDone(this.root, this.store, this.scheduler));
     this.teardown.push(mountControls(this.root, this.store, this.scheduler, () => this.exit()));
     this.teardown.push(mountLiveRegion(this.root, this.store));
     this.teardown.push(mountKeyboard(this, this.store, this.scheduler, () => this.exit()));
@@ -107,6 +112,7 @@ export class RsvpReader extends HTMLElement {
   }
 
   disconnectedCallback(): void {
+    cancelCountdown();
     this.scheduler?.destroy();
     for (const fn of this.teardown) try { fn(); } catch { /* noop */ }
     this.teardown = [];
@@ -178,6 +184,7 @@ export class RsvpReader extends HTMLElement {
 
   /** Public API: close / hide the reader */
   exit(): void {
+    cancelCountdown();
     this.scheduler.pause();
     this.dispatchEvent(new CustomEvent('rsvp:exit', { bubbles: true, composed: true }));
     if (!this.hasAttribute('persistent')) this.remove();
@@ -205,34 +212,16 @@ export class RsvpReader extends HTMLElement {
 
   private renderStates(): void {
     const empty = this.root.querySelector('[data-state="empty"]') as HTMLElement | null;
-    const done = this.root.querySelector('[data-state="done"]') as HTMLElement | null;
     const stage = this.root.querySelector('.stage') as HTMLElement | null;
-    if (!empty || !done || !stage) return;
+    if (!empty || !stage) return;
 
     const state = this.store.get();
     const isEmpty = state.totalWords === 0;
-    const isDone = state.status === 'done';
 
     empty.hidden = !isEmpty;
-    done.hidden = !isDone;
-    stage.hidden = isEmpty || isDone;
+    stage.hidden = isEmpty;
 
     if (isEmpty) empty.textContent = t('state.empty');
-    if (isDone) {
-      done.innerHTML = '';
-      const heading = document.createElement('strong');
-      heading.textContent = t('state.done');
-      const btn = document.createElement('button');
-      btn.className = 'btn btn--primary';
-      btn.type = 'button';
-      btn.textContent = t('done.again');
-      btn.addEventListener('click', () => {
-        this.scheduler.restart();
-        this.scheduler.play();
-      });
-      done.appendChild(heading);
-      done.appendChild(btn);
-    }
   }
 }
 

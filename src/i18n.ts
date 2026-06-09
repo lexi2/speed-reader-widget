@@ -9,6 +9,16 @@ type StringKey =
   | 'control.restart'
   | 'control.exit'
   | 'control.theme'
+  | 'control.label.play'
+  | 'control.label.pause'
+  | 'control.label.slower'
+  | 'control.label.faster'
+  | 'control.label.back'
+  | 'control.label.forward'
+  | 'control.label.restart'
+  | 'control.label.close'
+  | 'control.label.dark'
+  | 'control.label.light'
   | 'state.paused'
   | 'state.pausedWithTime'
   | 'state.done'
@@ -33,7 +43,17 @@ const en: Locale = {
   'control.skipForward': 'Skip forward 10 words',
   'control.restart': 'Restart',
   'control.exit': 'Exit',
-  'control.theme': 'Toggle theme',
+  'control.theme': 'Theme',
+  'control.label.play': 'Play',
+  'control.label.pause': 'Pause',
+  'control.label.slower': 'Slower',
+  'control.label.faster': 'Faster',
+  'control.label.back': 'Back',
+  'control.label.forward': 'Forward',
+  'control.label.restart': 'Restart',
+  'control.label.close': 'Close',
+  'control.label.dark': 'Dark Mode',
+  'control.label.light': 'Light Mode',
   'state.paused': 'Paused.',
   'state.pausedWithTime': 'Paused at {time} remaining.',
   'state.done': 'Finished.',

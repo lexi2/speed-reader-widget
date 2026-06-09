@@ -1,4 +1,4 @@
-export type ReaderStatus = 'idle' | 'playing' | 'paused' | 'done';
+export type ReaderStatus = 'idle' | 'countdown' | 'playing' | 'paused' | 'done';
 export type ThemePreference = 'light' | 'dark' | 'auto';
 export type LaunchMode = 'inline' | 'overlay';
 export type FontPreference = 'sans' | 'serif' | 'mono' | 'dyslexic';
@@ -7,6 +7,7 @@ export interface ReaderState {
   idx: number;
   wpm: number;
   status: ReaderStatus;
+  countdown: number | null;
   theme: ThemePreference;
   totalWords: number;
   words: string[];

@@ -39,6 +39,7 @@ export function createReaderStore(initial: Partial<ReaderState> = {}): Store<Rea
     idx: 0,
     wpm: 300,
     status: 'idle',
+    countdown: null,
     theme: 'auto',
     totalWords: 0,
     words: [],

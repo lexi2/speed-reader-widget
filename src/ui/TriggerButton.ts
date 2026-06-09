@@ -64,7 +64,6 @@ function openReader(article: Element, trigger: HTMLButtonElement, config: RsvpCo
     } else {
       reader.setAttribute('source-selector', getSelector(article));
     }
-    reader.play?.();
   });
 
   reader.addEventListener('rsvp:exit', () => trigger.focus(), { once: true });

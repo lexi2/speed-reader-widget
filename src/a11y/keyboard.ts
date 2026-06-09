@@ -2,6 +2,7 @@ import type { Scheduler } from '../core/scheduler';
 import type { Store } from '../core/state';
 import { WPM_MAX, WPM_MIN, WPM_STEP } from '../core/types';
 import type { ReaderState } from '../core/types';
+import { requestPlayback } from '../ui/playback';
 
 export function mountKeyboard(
   host: HTMLElement,
@@ -19,7 +20,7 @@ export function mountKeyboard(
       case ' ':
       case 'Spacebar':
         e.preventDefault();
-        scheduler.toggle();
+        requestPlayback(store, scheduler);
         break;
       case 'ArrowRight':
         e.preventDefault();

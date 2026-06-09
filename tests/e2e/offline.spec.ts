@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { startReading } from './helpers';
 
 /**
  * Offline-after-first-load proof:
@@ -19,6 +20,7 @@ test('widget keeps working after the network is cut post-init', async ({ page, c
 
   const reader = page.locator('rsvp-reader[data-rsvp-auto]');
   await expect(reader).toBeAttached();
+  await startReading(page, reader);
 
   // Count requests that happen after we go offline. They should be zero.
   let requestsAfterOffline = 0;
