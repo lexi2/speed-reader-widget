@@ -3,6 +3,27 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-06-09
+
+### Added
+- **Elapsed / remaining timer** in the meta line (`2:34 / 5:12` format), recomputing on WPM and idx changes.
+- **Skip ±10 words** — Back / Forward toolbar buttons plus `Shift+ArrowLeft` / `Shift+ArrowRight` keyboard shortcuts.
+- **Theming options** — `data-accent` with automatic on-accent contrast guard; `data-font="sans|serif|mono|dyslexic"` with lazy-loaded Atkinson Hyperlegible; documented CSS custom property overrides in README.
+- **3-2-1 countdown** before playback starts; reader opens idle with a centred stage play button instead of auto-playing.
+- **Stage play-again CTA** when an article finishes — circular play button in the word display area.
+- **Toolbar redesign** — top bar (restart, theme, close), bottom bar (slower, back, play/pause, forward, faster) with persistent labels; segmented Dark / Light theme toggle.
+- Playwright tests for timer, skip, theming, countdown, and expanded WCAG AA contrast checks (theme toggle and stage labels in light mode).
+
+### Changed
+- Slower / Faster icons simplified to minus / plus; skip icons use double chevrons.
+- Light-mode muted colour darkened (`#52525b`) so secondary text meets WCAG AA on the stage surface.
+
+### Deferred
+- In-widget settings panel (Phase P.4) — pending free vs premium decision.
+
+### Performance
+- Bundle: ~10.4 KB gzipped (still within the 30 KB budget).
+
 ## [0.2.2] — 2026-06-01
 
 ### Fixed
@@ -64,5 +85,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Manual placement override via `<rsvp-reader text="...">` for site owners who need explicit control.
 - Distributed under the [Functional Source License (FSL-1.1-MIT)](LICENSE) — source-available with commercial-license offering for resale, white-label, and managed-hosting use cases.
 
+[0.3.0]: https://github.com/lexi2/speed-reader-widget/compare/v0.2.2...v0.3.0
+[0.2.2]: https://github.com/lexi2/speed-reader-widget/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/lexi2/speed-reader-widget/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/lexi2/speed-reader-widget/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/lexi2/speed-reader-widget/releases/tag/v0.1.0

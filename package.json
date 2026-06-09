@@ -1,7 +1,7 @@
 {
   "name": "speed-reader-widget",
-  "version": "0.2.2",
-  "description": "Embeddable RSVP (Rapid Serial Visual Presentation) reader widget. Single-script auto-install for Ghost, WordPress, Substack, and any CMS.",
+  "version": "0.3.0",
+  "description": "Embeddable RSVP (Rapid Serial Visual Presentation) reader widget. Single-script auto-install for Ghost, WordPress, Substack, and any CMS. Includes timer, skip controls, theming, and accessible stage play UI.",
   "type": "module",
   "main": "dist/rsvp-reader.js",
   "module": "dist/rsvp-reader.js",
@@ -37,6 +37,7 @@
     "shadow-dom",
     "ghost",
     "wordpress",
+    "substack",
     "embed",
     "accessibility",
     "wcag",
