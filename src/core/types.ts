@@ -2,6 +2,7 @@ export type ReaderStatus = 'idle' | 'countdown' | 'playing' | 'paused' | 'done';
 export type ThemePreference = 'light' | 'dark' | 'auto';
 export type LaunchMode = 'inline' | 'overlay';
 export type FontPreference = 'sans' | 'serif' | 'mono' | 'dyslexic';
+export type FontSizePreference = 's' | 'm' | 'l';
 
 export interface ReaderState {
   idx: number;
@@ -9,6 +10,10 @@ export interface ReaderState {
   status: ReaderStatus;
   countdown: number | null;
   theme: ThemePreference;
+  font: FontPreference;
+  fontSize: FontSizePreference;
+  alwaysShowToolbar: boolean;
+  settingsOpen: boolean;
   totalWords: number;
   words: string[];
 }

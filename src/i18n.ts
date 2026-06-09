@@ -9,6 +9,10 @@ type StringKey =
   | 'control.restart'
   | 'control.exit'
   | 'control.theme'
+  | 'control.settings'
+  | 'control.fullscreen'
+  | 'control.exitFullscreen'
+  | 'control.closeSettings'
   | 'control.label.play'
   | 'control.label.pause'
   | 'control.label.slower'
@@ -17,8 +21,22 @@ type StringKey =
   | 'control.label.forward'
   | 'control.label.restart'
   | 'control.label.close'
+  | 'control.label.exit'
   | 'control.label.dark'
   | 'control.label.light'
+  | 'control.label.settings'
+  | 'settings.title'
+  | 'settings.theme'
+  | 'settings.font'
+  | 'settings.fontSize'
+  | 'settings.font.sans'
+  | 'settings.font.serif'
+  | 'settings.font.mono'
+  | 'settings.font.dyslexic'
+  | 'settings.fontSize.s'
+  | 'settings.fontSize.m'
+  | 'settings.fontSize.l'
+  | 'settings.alwaysShowToolbar'
   | 'state.paused'
   | 'state.pausedWithTime'
   | 'state.done'
@@ -52,8 +70,28 @@ const en: Locale = {
   'control.label.forward': 'Forward',
   'control.label.restart': 'Restart',
   'control.label.close': 'Close',
+  'control.label.exit': 'Exit',
   'control.label.dark': 'Dark Mode',
   'control.label.light': 'Light Mode',
+  'control.settings': 'Settings',
+  'control.fullscreen': 'Enter fullscreen',
+  'control.exitFullscreen': 'Exit fullscreen',
+  'control.closeSettings': 'Close settings',
+  'control.label.settings': 'Settings',
+  'control.label.fullscreen': 'Fullscreen',
+  'control.label.closeSettings': 'Close',
+  'settings.title': 'Settings',
+  'settings.theme': 'Theme',
+  'settings.font': 'Font',
+  'settings.fontSize': 'Text size',
+  'settings.font.sans': 'Sans',
+  'settings.font.serif': 'Serif',
+  'settings.font.mono': 'Mono',
+  'settings.font.dyslexic': 'Dyslexic',
+  'settings.fontSize.s': 'S',
+  'settings.fontSize.m': 'M',
+  'settings.fontSize.l': 'L',
+  'settings.alwaysShowToolbar': 'Always show controls',
   'state.paused': 'Paused.',
   'state.pausedWithTime': 'Paused at {time} remaining.',
   'state.done': 'Finished.',

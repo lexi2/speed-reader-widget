@@ -4,6 +4,8 @@ import type { ReaderState } from '../core/types';
 
 let activeCancel: (() => void) | null = null;
 
+const STEP_MS = 800;
+
 /** Start from idle with a 3-2-1 countdown, or toggle play/pause mid-session. */
 export function requestPlayback(
   store: Store<ReaderState>,
@@ -34,26 +36,37 @@ function runCountdown(
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const steps = reduced ? [1] : [3, 2, 1];
   let stepIdx = 0;
-  let timer: number | null = null;
+  let stepStart = 0;
+  let rafId: number | null = null;
+  let cancelled = false;
 
   const cancel = () => {
-    if (timer !== null) clearTimeout(timer);
-    timer = null;
+    cancelled = true;
+    if (rafId !== null) cancelAnimationFrame(rafId);
+    rafId = null;
     if (store.get().status === 'countdown') {
       store.set({ status: 'idle', countdown: null });
     }
   };
 
-  const tick = () => {
+  const loop = (now: number) => {
+    if (cancelled) return;
     if (stepIdx >= steps.length) {
       store.set({ status: 'idle', countdown: null });
       onComplete();
       return;
     }
-    store.set({ status: 'countdown', countdown: steps[stepIdx++] });
-    timer = window.setTimeout(tick, reduced ? 200 : 1000);
+    if (stepStart === 0) {
+      stepStart = now;
+      store.set({ status: 'countdown', countdown: steps[stepIdx] });
+    }
+    if (now - stepStart >= STEP_MS) {
+      stepIdx++;
+      stepStart = 0;
+    }
+    rafId = requestAnimationFrame(loop);
   };
 
-  tick();
+  rafId = requestAnimationFrame(loop);
   return cancel;
 }

@@ -7,15 +7,20 @@ import { buildTemplate } from './template';
 import {
   applyAccent,
   applyFont,
+  applyFontSize,
   applyTheme,
   persistThemeChoice,
   readPersistedTheme,
   watchSystemTheme,
 } from '../theme/theme';
+import { readPrefs, writePrefs } from '../utils/prefs';
 import { mountWordDisplay } from '../ui/WordDisplay';
 import { mountControls } from '../ui/Controls';
+import { mountImmersive } from '../ui/immersive';
+import { mountSettingsPanel } from '../ui/SettingsPanel';
 import { mountStageDone } from '../ui/StageDone';
 import { mountStagePlay } from '../ui/StagePlay';
+import { mountToolbarVisibility } from '../ui/ToolbarVisibility';
 import { cancelCountdown } from '../ui/playback';
 import { mountOverlay } from '../ui/Overlay';
 import { mountKeyboard } from '../a11y/keyboard';
@@ -60,20 +65,32 @@ export class RsvpReader extends HTMLElement {
     this.root = this.attachShadow({ mode: 'open' });
     this.root.innerHTML = buildTemplate();
 
+    const prefs = readPrefs();
     const persistedTheme = readPersistedTheme();
     const themeAttr = (this.getAttribute(ATTR.THEME) as ThemePreference | null);
-    const initialTheme: ThemePreference = persistedTheme ?? themeAttr ?? DEFAULT_CONFIG.theme;
+    const initialTheme: ThemePreference = prefs.theme ?? persistedTheme ?? themeAttr ?? DEFAULT_CONFIG.theme;
+
+    const fontAttr = (this.getAttribute(ATTR.FONT) as FontPreference | null) ?? DEFAULT_CONFIG.font;
+    const initialFont: FontPreference = prefs.font ?? fontAttr;
+    const initialFontSize = prefs.fontSize ?? 'm';
 
     const wpm = clampWpm(parseInt(this.getAttribute(ATTR.WPM) ?? '', 10) || DEFAULT_CONFIG.wpm);
 
-    this.store = createReaderStore({ wpm, theme: initialTheme });
+    this.store = createReaderStore({
+      wpm,
+      theme: initialTheme,
+      font: initialFont,
+      fontSize: initialFontSize,
+      alwaysShowToolbar: prefs.alwaysShowToolbar ?? false,
+    });
     this.scheduler = new Scheduler(this.store);
 
     setLocale(this.getAttribute(ATTR.LANG) ?? DEFAULT_CONFIG.lang);
 
     applyTheme(this, initialTheme);
     applyAccent(this, this.getAttribute(ATTR.ACCENT));
-    applyFont(this, (this.getAttribute(ATTR.FONT) as FontPreference | null) ?? DEFAULT_CONFIG.font);
+    applyFont(this, initialFont);
+    applyFontSize(this, initialFontSize);
     this.setAttribute('data-mode', this.getAttribute(ATTR.MODE) ?? DEFAULT_CONFIG.mode);
 
     // System theme watcher only matters for 'auto'
@@ -83,21 +100,36 @@ export class RsvpReader extends HTMLElement {
       }),
     );
 
-    // Theme subscription
+    // Prefs + theme subscription
     this.teardown.push(
       this.store.subscribe((next, prev) => {
         if (next.theme !== prev.theme) {
           applyTheme(this, next.theme);
           persistThemeChoice(next.theme);
+          writePrefs({ theme: next.theme });
+        }
+        if (next.font !== prev.font) {
+          applyFont(this, next.font);
+          writePrefs({ font: next.font });
+        }
+        if (next.fontSize !== prev.fontSize) {
+          applyFontSize(this, next.fontSize);
+          writePrefs({ fontSize: next.fontSize });
+        }
+        if (next.alwaysShowToolbar !== prev.alwaysShowToolbar) {
+          writePrefs({ alwaysShowToolbar: next.alwaysShowToolbar });
         }
       }),
     );
 
     // Mount UI pieces
+    this.teardown.push(mountImmersive(this, this.root, () => this.exit()));
     this.teardown.push(mountWordDisplay(this.root, this.store));
     this.teardown.push(mountStagePlay(this.root, this.store, this.scheduler));
     this.teardown.push(mountStageDone(this.root, this.store, this.scheduler));
-    this.teardown.push(mountControls(this.root, this.store, this.scheduler, () => this.exit()));
+    this.teardown.push(mountControls(this, this.root, this.store, this.scheduler, () => this.exit()));
+    this.teardown.push(mountSettingsPanel(this, this.root, this.store));
+    this.teardown.push(mountToolbarVisibility(this, this.root, this.store));
     this.teardown.push(mountLiveRegion(this.root, this.store));
     this.teardown.push(mountKeyboard(this, this.store, this.scheduler, () => this.exit()));
 
@@ -185,6 +217,7 @@ export class RsvpReader extends HTMLElement {
   /** Public API: close / hide the reader */
   exit(): void {
     cancelCountdown();
+    this.store?.set({ settingsOpen: false });
     this.scheduler.pause();
     this.dispatchEvent(new CustomEvent('rsvp:exit', { bubbles: true, composed: true }));
     if (!this.hasAttribute('persistent')) this.remove();

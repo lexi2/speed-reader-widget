@@ -19,7 +19,7 @@ export class Scheduler {
 
   play(): void {
     const { status, totalWords } = this.store.get();
-    if (status === 'playing' || totalWords === 0) return;
+    if (status === 'playing' || status === 'countdown' || totalWords === 0) return;
     if (status === 'done') this.store.set({ idx: 0 });
     this.store.set({ status: 'playing' });
     this.scheduleNext();

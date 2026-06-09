@@ -88,7 +88,7 @@ test('keyboard: ArrowRight bumps WPM', async ({ page }) => {
 test('keyboard: Space toggles play/pause', async ({ page }) => {
   await reader(page).focus();
   await page.keyboard.press('Space');
-  await page.waitForTimeout(3200);
+  await page.waitForTimeout(3500);
   const status1 = await reader(page).evaluate((el: Element) =>
     (el as HTMLElement).shadowRoot?.querySelector('[data-meta="status"]')?.textContent,
   );
@@ -106,16 +106,16 @@ test('keyboard: Escape exits the reader', async ({ page }) => {
   await expect(reader(page)).toHaveCount(0);
 });
 
-test('theme toggle switches between dark and light', async ({ page }) => {
-  await reader(page).evaluate((el: Element) =>
-    (el as HTMLElement).shadowRoot
-      ?.querySelector<HTMLButtonElement>('button[data-theme-pick="light"]')
-      ?.click(),
-  );
+test('settings panel switches between dark and light', async ({ page }) => {
+  await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    root.querySelector<HTMLButtonElement>('button[data-control="settings"]')?.click();
+    root.querySelector<HTMLButtonElement>('[data-settings-theme] [data-theme-pick="light"]')?.click();
+  });
   expect(await reader(page).getAttribute('data-theme')).toBe('light');
   await reader(page).evaluate((el: Element) =>
     (el as HTMLElement).shadowRoot
-      ?.querySelector<HTMLButtonElement>('button[data-theme-pick="dark"]')
+      ?.querySelector<HTMLButtonElement>('[data-settings-theme] [data-theme-pick="dark"]')
       ?.click(),
   );
   expect(await reader(page).getAttribute('data-theme')).toBe('dark');

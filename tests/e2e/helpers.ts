@@ -9,5 +9,5 @@ export async function startReading(page: Page, reader: Locator): Promise<void> {
     const btn = stagePlay && !stagePlay.hidden ? stagePlay : toolbarPlay;
     btn?.click();
   });
-  await page.waitForTimeout(3200);
+  await page.waitForTimeout(3500);
 }

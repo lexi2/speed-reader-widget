@@ -34,6 +34,8 @@ test('play shows 3-2-1 countdown then displays words', async ({ page }) => {
       ?.click();
   });
 
+  await page.waitForTimeout(100);
+
   const during = await reader(page).evaluate((el: Element) => {
     const root = (el as HTMLElement).shadowRoot!;
     return {
@@ -46,7 +48,7 @@ test('play shows 3-2-1 countdown then displays words', async ({ page }) => {
   expect(['3', '2', '1']).toContain(during.countdown);
   expect(during.wordHidden).toBe(true);
 
-  await page.waitForTimeout(3200);
+  await page.waitForTimeout(3500);
 
   const after = await reader(page).evaluate((el: Element) => {
     const root = (el as HTMLElement).shadowRoot!;
@@ -61,4 +63,35 @@ test('play shows 3-2-1 countdown then displays words', async ({ page }) => {
   expect(after.countdownHidden).toBe(true);
   expect(after.wordHidden).toBe(false);
   expect(after.hasWord).toBe(true);
+});
+
+test.describe('mobile viewport', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('countdown is visible before playback starts', async ({ page }) => {
+    await page.goto('/ghost-post-fixture.html');
+    await page.locator('button.rsvp-reader-trigger').click();
+
+    await reader(page).evaluate((el: Element) => {
+      (el as HTMLElement).shadowRoot
+        ?.querySelector<HTMLButtonElement>('button[data-control="stage-play"]')
+        ?.click();
+    });
+
+    await page.waitForTimeout(100);
+
+    const during = await reader(page).evaluate((el: Element) => {
+      const root = (el as HTMLElement).shadowRoot!;
+      const countdown = root.querySelector('[data-countdown]') as HTMLElement | null;
+      return {
+        visible: countdown ? !countdown.hidden : false,
+        text: countdown?.textContent ?? '',
+        status: root.querySelector('[data-meta="status"]')?.textContent,
+      };
+    });
+
+    expect(during.visible).toBe(true);
+    expect(['3', '2', '1']).toContain(during.text);
+    expect(during.status).toBe('Starting');
+  });
 });

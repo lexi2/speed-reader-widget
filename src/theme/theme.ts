@@ -1,4 +1,4 @@
-import type { FontPreference, ThemePreference } from '../core/types';
+import type { FontPreference, FontSizePreference, ThemePreference } from '../core/types';
 import { accentNeedsDarkText } from '../utils/contrast';
 import { safeStorage } from '../utils/safe-storage';
 
@@ -52,6 +52,14 @@ export function applyAccent(host: HTMLElement, accent: string | null): void {
 export function applyFont(host: HTMLElement, font: FontPreference): void {
   host.setAttribute('data-font', font);
   if (font === 'dyslexic') ensureDyslexicFont();
+}
+
+export function applyFontSize(host: HTMLElement, size: FontSizePreference): void {
+  if (size === 'm') {
+    host.removeAttribute('data-font-size');
+  } else {
+    host.setAttribute('data-font-size', size);
+  }
 }
 
 let dyslexicFontLoaded = false;

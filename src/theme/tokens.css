@@ -54,6 +54,13 @@
   font-family: var(--rsvp-font-sans);
 }
 
+:host([data-font-size="s"]) {
+  --rsvp-word-size: clamp(1.5rem, 5vw, 2.5rem);
+}
+:host([data-font-size="l"]) {
+  --rsvp-word-size: clamp(2.5rem, 8vw, 4rem);
+}
+
 @media (prefers-reduced-motion: reduce) {
   :host {
     --rsvp-transition: 0ms;

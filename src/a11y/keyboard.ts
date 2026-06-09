@@ -42,7 +42,7 @@ export function mountKeyboard(
       case 'R':
         e.preventDefault();
         scheduler.restart();
-        scheduler.play();
+        requestPlayback(store, scheduler);
         break;
       case 'Escape':
         e.preventDefault();

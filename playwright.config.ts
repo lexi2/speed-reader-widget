@@ -15,6 +15,11 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    {
+      name: 'iphone',
+      use: { ...devices['iPhone 14'] },
+      testMatch: /mobile-toolbar\.spec\.ts|countdown\.spec\.ts/,
+    },
   ],
   webServer: {
     command: 'npm run dev',

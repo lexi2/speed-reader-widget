@@ -69,16 +69,22 @@ for (const theme of ['light', 'dark'] as const) {
   });
 }
 
-test('light mode: inactive theme toggle passes WCAG AA contrast', async ({ page }) => {
+test('light mode: inactive settings theme segment passes WCAG AA contrast', async ({ page }) => {
   await page.goto('/ghost-post-fixture.html');
   await page.locator('button.rsvp-reader-trigger').click();
   const reader = page.locator('rsvp-reader[data-rsvp-auto]');
   await expect(reader).toBeAttached();
 
+  await reader.evaluate((el: Element) => {
+    (el as HTMLElement).shadowRoot
+      ?.querySelector<HTMLButtonElement>('button[data-control="settings"]')
+      ?.click();
+  });
+
   await assertAaContrast(
     page,
     reader,
-    '.theme-toggle__btn[aria-pressed="false"]',
+    '[data-settings-theme] .settings-segmented__btn[aria-pressed="false"]',
     'light',
   );
 });
