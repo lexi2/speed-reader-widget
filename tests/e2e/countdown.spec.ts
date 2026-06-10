@@ -7,30 +7,32 @@ test.beforeEach(async ({ page }) => {
 
 const reader = (page: import('@playwright/test').Page) => page.locator('rsvp-reader[data-rsvp-auto]');
 
-test('reader opens idle with stage play button and no auto-play', async ({ page }) => {
+test('reader opens idle with stage hint and toolbar play', async ({ page }) => {
   const state = await reader(page).evaluate((el: Element) => {
     const root = (el as HTMLElement).shadowRoot!;
-    const stageWrap = root.querySelector('[data-stage-play-wrap]') as HTMLElement | null;
+    const idleHint = root.querySelector('[data-stage-idle-hint]') as HTMLElement | null;
     const toolbarPlayWrap = root.querySelector('[data-control-wrap="play"]') as HTMLElement | null;
     return {
       status: root.querySelector('[data-meta="status"]')?.textContent,
       wordHidden: (root.querySelector('.word') as HTMLElement)?.hidden,
-      stagePlayVisible: stageWrap ? !stageWrap.hidden : false,
-      stagePlayLabel: root.querySelector('[data-stage-play-label]')?.textContent,
+      idleHintVisible: idleHint ? !idleHint.hidden : false,
+      idleHintText: idleHint?.textContent,
+      stagePlayButton: root.querySelector('button[data-control="stage-play"]'),
       toolbarPlayVisible: toolbarPlayWrap ? !toolbarPlayWrap.hidden : false,
     };
   });
   expect(state.status).toBe('Ready');
   expect(state.wordHidden).toBe(true);
-  expect(state.stagePlayVisible).toBe(true);
-  expect(state.stagePlayLabel).toBe('Play');
+  expect(state.idleHintVisible).toBe(true);
+  expect(state.idleHintText).toBe("Press Play below when you're ready");
+  expect(state.stagePlayButton).toBeNull();
   expect(state.toolbarPlayVisible).toBe(true);
 });
 
 test('play shows 3-2-1 countdown then displays words', async ({ page }) => {
   await reader(page).evaluate((el: Element) => {
     (el as HTMLElement).shadowRoot
-      ?.querySelector<HTMLButtonElement>('button[data-control="stage-play"]')
+      ?.querySelector<HTMLButtonElement>('button[data-control="play"]')
       ?.click();
   });
 
@@ -74,7 +76,7 @@ test.describe('mobile viewport', () => {
 
     await reader(page).evaluate((el: Element) => {
       (el as HTMLElement).shadowRoot
-        ?.querySelector<HTMLButtonElement>('button[data-control="stage-play"]')
+        ?.querySelector<HTMLButtonElement>('button[data-control="play"]')
         ?.click();
     });
 

@@ -125,7 +125,7 @@ export class RsvpReader extends HTMLElement {
     // Mount UI pieces
     this.teardown.push(mountImmersive(this, this.root, () => this.exit()));
     this.teardown.push(mountWordDisplay(this.root, this.store));
-    this.teardown.push(mountStagePlay(this.root, this.store, this.scheduler));
+    this.teardown.push(mountStagePlay(this.root, this.store));
     this.teardown.push(mountStageDone(this.root, this.store, this.scheduler));
     this.teardown.push(mountControls(this, this.root, this.store, this.scheduler, () => this.exit()));
     this.teardown.push(mountSettingsPanel(this, this.root, this.store));

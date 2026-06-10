@@ -18,9 +18,10 @@ export function mountStageDone(
   const label = root.querySelector('[data-stage-done-label]') as HTMLElement | null;
   if (!stage || !wrap || !btn || !label) return () => {};
 
-  btn.innerHTML = icons.play;
+  btn.innerHTML = icons.restart;
   setButtonLabel(btn, t('done.again'));
   label.textContent = t('done.again');
+  btn.setAttribute('aria-keyshortcuts', 'R');
 
   const onClick = () => {
     scheduler.restart();

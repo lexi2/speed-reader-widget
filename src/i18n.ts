@@ -47,6 +47,7 @@ type StringKey =
   | 'aria.word'
   | 'aria.progress'
   | 'overlay.title'
+  | 'stage.idleHint'
   | 'done.again';
 
 type Locale = Record<StringKey, string>;
@@ -102,6 +103,7 @@ const en: Locale = {
   'aria.word': 'Current word',
   'aria.progress': 'Reading progress',
   'overlay.title': 'Speed reader',
+  'stage.idleHint': 'Press Play below when you\'re ready',
   'done.again': 'Read again',
 };
 

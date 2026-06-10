@@ -12,10 +12,7 @@ export function buildTemplate(): string {
   </div>
   <div class="stage" part="stage">
     <div class="word__guide" aria-hidden="true"></div>
-    <div class="control-item control-item--stage" data-stage-play-wrap hidden>
-      <button type="button" class="stage-play btn btn--primary" data-control="stage-play"></button>
-      <span class="control-item__label" data-stage-play-label></span>
-    </div>
+    <p class="stage-idle-hint" data-stage-idle-hint hidden></p>
     <div class="control-item control-item--stage control-item--stage-done" data-stage-done-wrap hidden>
       <button type="button" class="stage-play btn btn--primary" data-control="stage-done"></button>
       <span class="control-item__label" data-stage-done-label></span>

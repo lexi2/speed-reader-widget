@@ -89,7 +89,7 @@ test('light mode: inactive settings theme segment passes WCAG AA contrast', asyn
   );
 });
 
-test('light mode: stage play label passes WCAG AA contrast', async ({ page }) => {
+test('light mode: stage idle hint passes WCAG AA contrast', async ({ page }) => {
   await page.goto('/ghost-post-fixture.html');
   await page.locator('button.rsvp-reader-trigger').click();
   const reader = page.locator('rsvp-reader[data-rsvp-auto]');
@@ -100,9 +100,9 @@ test('light mode: stage play label passes WCAG AA contrast', async ({ page }) =>
 
   const ratio = await reader.evaluate((el: Element) => {
     const root = (el as HTMLElement).shadowRoot!;
-    const label = root.querySelector('[data-stage-play-label]') as HTMLElement;
+    const label = root.querySelector('[data-stage-idle-hint]') as HTMLElement;
     const stage = root.querySelector('.stage') as HTMLElement;
-    if (!label || !stage) throw new Error('Missing stage play label');
+    if (!label || !stage) throw new Error('Missing stage idle hint');
     const labelCs = getComputedStyle(label);
     const stageCs = getComputedStyle(stage);
     const parse = (s: string) => {
