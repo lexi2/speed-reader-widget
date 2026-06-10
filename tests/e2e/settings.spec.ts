@@ -40,6 +40,48 @@ test('settings persist font choice in localStorage', async ({ page }) => {
   expect(prefs).toContain('"font":"mono"');
 });
 
+test('settings dyslexic font loads Atkinson Hyperlegible in shadow DOM', async ({ page }) => {
+  await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    root.querySelector<HTMLButtonElement>('button[data-control="settings"]')?.click();
+    root.querySelector<HTMLButtonElement>('[data-settings-font] [data-font-pick="dyslexic"]')?.click();
+  });
+
+  expect(await reader(page).getAttribute('data-font')).toBe('dyslexic');
+
+  const fontInfo = await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    return {
+      hasFontFace: !!root.querySelector('[data-rsvp-dyslexic-font]'),
+      wordFont: getComputedStyle(root.querySelector('.word')!).fontFamily,
+    };
+  });
+  expect(fontInfo.hasFontFace).toBe(true);
+  expect(fontInfo.wordFont.toLowerCase()).toContain('atkinson');
+
+  const renderInfo = await reader(page).evaluate(async (el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    const word = root.querySelector('.word') as HTMLElement;
+    const cs = getComputedStyle(word);
+    const measure = (family: string, weight: string) => {
+      const ctx = document.createElement('canvas').getContext('2d')!;
+      ctx.font = `${weight} 48px ${family}`;
+      return ctx.measureText('Reading').width;
+    };
+    const dysStack = '"Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif';
+    const sansStack = 'ui-sans-serif, system-ui, sans-serif';
+    await document.fonts.load('400 48px "Atkinson Hyperlegible"');
+    const wordWidth = measure(dysStack, cs.fontWeight);
+    const sansWidth = measure(sansStack, '500');
+    return {
+      fontWeight: cs.fontWeight,
+      rendersAtkinson: wordWidth !== sansWidth,
+    };
+  });
+  expect(renderInfo.fontWeight).toBe('400');
+  expect(renderInfo.rendersAtkinson).toBe(true);
+});
+
 test('settings font size applies data-font-size attribute', async ({ page }) => {
   await reader(page).evaluate((el: Element) => {
     const root = (el as HTMLElement).shadowRoot!;

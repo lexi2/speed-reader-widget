@@ -89,7 +89,7 @@
 .countdown[hidden], .word[hidden] { display: none; }
 
 .word {
-  font-family: var(--rsvp-font-mono);
+  font-family: var(--rsvp-font-sans);
   font-size: var(--rsvp-word-size);
   line-height: var(--rsvp-line-height);
   font-weight: 500;
@@ -101,6 +101,13 @@
 
 .word .pre, .word .post { color: var(--rsvp-fg); }
 .word .orp { color: var(--rsvp-orp); font-weight: 700; }
+
+/* Atkinson ships as weight 400 only — medium/bold requests fall back to system sans */
+:host([data-font="dyslexic"]) .word,
+:host([data-font="dyslexic"]) .word .orp {
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
 
 .word__guide {
   position: absolute;

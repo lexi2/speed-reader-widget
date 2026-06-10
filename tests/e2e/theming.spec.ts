@@ -77,10 +77,18 @@ test('dyslexic font injects @font-face rule', async ({ page }) => {
   await page.goto('/ghost-post-fixture.html');
   await page.locator('button.rsvp-reader-trigger').click();
   await expect(page.locator('rsvp-reader[data-rsvp-auto]')).toHaveAttribute('data-font', 'dyslexic');
-  const hasFontFace = await page.evaluate(() =>
-    !!document.querySelector('[data-rsvp-dyslexic-font]'),
-  );
-  expect(hasFontFace).toBe(true);
+  const fontInfo = await page.locator('rsvp-reader[data-rsvp-auto]').evaluate((el: Element) => {
+    const host = el as HTMLElement;
+    const root = host.shadowRoot!;
+    return {
+      hasFontFace: !!root.querySelector('[data-rsvp-dyslexic-font]'),
+      fontUrl: root.querySelector('[data-rsvp-dyslexic-font]')?.textContent ?? '',
+      wordFont: getComputedStyle(root.querySelector('.word')!).fontFamily,
+    };
+  });
+  expect(fontInfo.hasFontFace).toBe(true);
+  expect(fontInfo.fontUrl).toContain('/fonts/atkinson-hyperlegible-latin.woff2');
+  expect(fontInfo.wordFont.toLowerCase()).toContain('atkinson');
 });
 
 test('contrast helper flags low-contrast accents', () => {

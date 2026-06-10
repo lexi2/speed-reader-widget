@@ -48,11 +48,6 @@
 :host([data-font="dyslexic"]) {
   --rsvp-font-sans: var(--rsvp-font-dyslexic);
 }
-:host([data-font="serif"]) .word,
-:host([data-font="mono"]) .word,
-:host([data-font="dyslexic"]) .word {
-  font-family: var(--rsvp-font-sans);
-}
 
 :host([data-font-size="s"]) {
   --rsvp-word-size: clamp(1.5rem, 5vw, 2.5rem);

@@ -51,7 +51,7 @@ export function applyAccent(host: HTMLElement, accent: string | null): void {
 
 export function applyFont(host: HTMLElement, font: FontPreference): void {
   host.setAttribute('data-font', font);
-  if (font === 'dyslexic') ensureDyslexicFont();
+  if (font === 'dyslexic') ensureDyslexicFont(host);
 }
 
 export function applyFontSize(host: HTMLElement, size: FontSizePreference): void {
@@ -62,15 +62,7 @@ export function applyFontSize(host: HTMLElement, size: FontSizePreference): void
   }
 }
 
-let dyslexicFontLoaded = false;
-function ensureDyslexicFont(): void {
-  if (dyslexicFontLoaded || document.querySelector('[data-rsvp-dyslexic-font]')) return;
-  dyslexicFontLoaded = true;
-  const base = widgetAssetBase();
-  const url = `${base}/fonts/atkinson-hyperlegible-latin.woff2`;
-  const style = document.createElement('style');
-  style.setAttribute('data-rsvp-dyslexic-font', '');
-  style.textContent = `
+const DYSLEXIC_FONT_CSS = (url: string) => `
 @font-face {
   font-family: "Atkinson Hyperlegible";
   font-style: normal;
@@ -78,7 +70,44 @@ function ensureDyslexicFont(): void {
   font-display: swap;
   src: url("${url}") format("woff2");
 }`;
-  document.head.appendChild(style);
+
+function ensureDyslexicFont(host: HTMLElement): void {
+  const url = dyslexicFontUrl();
+  const css = DYSLEXIC_FONT_CSS(url);
+
+  if (!document.querySelector('[data-rsvp-dyslexic-font]')) {
+    const docStyle = document.createElement('style');
+    docStyle.setAttribute('data-rsvp-dyslexic-font', '');
+    docStyle.textContent = css;
+    document.head.appendChild(docStyle);
+  }
+
+  const root = host.shadowRoot;
+  if (!root || root.querySelector('[data-rsvp-dyslexic-font]')) return;
+
+  const style = document.createElement('style');
+  style.setAttribute('data-rsvp-dyslexic-font', '');
+  style.textContent = css;
+  root.insertBefore(style, root.firstChild);
+
+  void document.fonts.load('400 1rem "Atkinson Hyperlegible"');
+}
+
+function dyslexicFontUrl(): string {
+  const fontPath = '/fonts/atkinson-hyperlegible-latin.woff2';
+  const base = widgetAssetBase();
+  if (!base) return fontPath;
+
+  try {
+    const baseUrl = new URL(base, window.location.href);
+    // Vite dev serves /src/index.ts but public assets live at /fonts/.
+    if (/\/src$/i.test(baseUrl.pathname)) {
+      return `${baseUrl.origin}${fontPath}`;
+    }
+    return new URL(`fonts/atkinson-hyperlegible-latin.woff2`, `${baseUrl.href}/`).href;
+  } catch {
+    return fontPath;
+  }
 }
 
 function widgetAssetBase(): string {
