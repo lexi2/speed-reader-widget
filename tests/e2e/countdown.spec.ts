@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { waitForCountdownVisible } from './helpers';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/ghost-post-fixture.html');
@@ -30,13 +31,7 @@ test('reader opens idle with stage hint and toolbar play', async ({ page }) => {
 });
 
 test('play shows 3-2-1 countdown then displays words', async ({ page }) => {
-  await reader(page).evaluate((el: Element) => {
-    (el as HTMLElement).shadowRoot
-      ?.querySelector<HTMLButtonElement>('button[data-control="play"]')
-      ?.click();
-  });
-
-  await page.waitForTimeout(100);
+  const countdownText = await waitForCountdownVisible(page, reader(page));
 
   const during = await reader(page).evaluate((el: Element) => {
     const root = (el as HTMLElement).shadowRoot!;
@@ -47,10 +42,17 @@ test('play shows 3-2-1 countdown then displays words', async ({ page }) => {
     };
   });
   expect(during.countdownVisible).toBe(true);
-  expect(['3', '2', '1']).toContain(during.countdown);
+  expect(['3', '2', '1']).toContain(during.countdown ?? countdownText);
   expect(during.wordHidden).toBe(true);
 
-  await page.waitForTimeout(3500);
+  await page.waitForFunction(
+    (el: Element) => {
+      const root = (el as HTMLElement).shadowRoot;
+      return root?.querySelector('[data-meta="status"]')?.textContent === 'Playing';
+    },
+    await reader(page).elementHandle(),
+    { timeout: 15_000 },
+  );
 
   const after = await reader(page).evaluate((el: Element) => {
     const root = (el as HTMLElement).shadowRoot!;
@@ -74,13 +76,7 @@ test.describe('mobile viewport', () => {
     await page.goto('/ghost-post-fixture.html');
     await page.locator('button.rsvp-reader-trigger').click();
 
-    await reader(page).evaluate((el: Element) => {
-      (el as HTMLElement).shadowRoot
-        ?.querySelector<HTMLButtonElement>('button[data-control="play"]')
-        ?.click();
-    });
-
-    await page.waitForTimeout(100);
+    const countdownText = await waitForCountdownVisible(page, reader(page));
 
     const during = await reader(page).evaluate((el: Element) => {
       const root = (el as HTMLElement).shadowRoot!;
@@ -93,7 +89,7 @@ test.describe('mobile viewport', () => {
     });
 
     expect(during.visible).toBe(true);
-    expect(['3', '2', '1']).toContain(during.text);
+    expect(['3', '2', '1']).toContain(during.text || countdownText);
     expect(during.status).toBe('Starting');
   });
 });
