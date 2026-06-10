@@ -26,6 +26,7 @@ type StringKey =
   | 'control.label.light'
   | 'control.label.settings'
   | 'control.label.fullscreen'
+  | 'control.label.exitFullscreen'
   | 'control.label.closeSettings'
   | 'settings.title'
   | 'settings.theme'
@@ -38,6 +39,9 @@ type StringKey =
   | 'settings.fontSize.s'
   | 'settings.fontSize.m'
   | 'settings.fontSize.l'
+  | 'settings.fontSize.aria.s'
+  | 'settings.fontSize.aria.m'
+  | 'settings.fontSize.aria.l'
   | 'state.paused'
   | 'state.pausedWithTime'
   | 'state.done'
@@ -55,33 +59,34 @@ type Locale = Record<StringKey, string>;
 
 const en: Locale = {
   'trigger.label': 'Read faster',
-  'control.play': 'Play',
-  'control.pause': 'Pause',
-  'control.faster': 'Faster',
-  'control.slower': 'Slower',
-  'control.skipBack': 'Skip back 10 words',
-  'control.skipForward': 'Skip forward 10 words',
-  'control.restart': 'Restart',
-  'control.exit': 'Exit',
+  'control.play': 'Play reader',
+  'control.pause': 'Pause reader',
+  'control.faster': 'Increase speed by 25 WPM',
+  'control.slower': 'Decrease speed by 25 WPM',
+  'control.skipBack': 'Go back 10 words',
+  'control.skipForward': 'Go forward 10 words',
+  'control.restart': 'Restart article',
+  'control.exit': 'Close screen reader',
   'control.theme': 'Theme',
-  'control.label.play': 'Play',
-  'control.label.pause': 'Pause',
-  'control.label.slower': 'Slower',
-  'control.label.faster': 'Faster',
-  'control.label.back': 'Back',
-  'control.label.forward': 'Forward',
-  'control.label.restart': 'Restart',
+  'control.label.play': 'Play reader',
+  'control.label.pause': 'Pause reader',
+  'control.label.slower': 'Decrease speed by 25 WPM',
+  'control.label.faster': 'Increase speed by 25 WPM',
+  'control.label.back': 'Go back 10 words',
+  'control.label.forward': 'Go forward 10 words',
+  'control.label.restart': 'Restart article',
   'control.label.close': 'Close',
-  'control.label.exit': 'Exit',
+  'control.label.exit': 'Close screen reader',
   'control.label.dark': 'Dark Mode',
   'control.label.light': 'Light Mode',
-  'control.settings': 'Settings',
-  'control.fullscreen': 'Enter fullscreen',
-  'control.exitFullscreen': 'Exit fullscreen',
-  'control.closeSettings': 'Close settings',
-  'control.label.settings': 'Settings',
-  'control.label.fullscreen': 'Fullscreen',
-  'control.label.closeSettings': 'Close',
+  'control.settings': 'Open settings panel',
+  'control.fullscreen': 'Expand to fullscreen',
+  'control.exitFullscreen': 'Collapse fullscreen',
+  'control.closeSettings': 'Close settings panel',
+  'control.label.settings': 'Open settings panel',
+  'control.label.fullscreen': 'Expand to fullscreen',
+  'control.label.exitFullscreen': 'Collapse fullscreen',
+  'control.label.closeSettings': 'Close settings panel',
   'settings.title': 'Settings',
   'settings.theme': 'Theme',
   'settings.font': 'Font',
@@ -93,6 +98,9 @@ const en: Locale = {
   'settings.fontSize.s': 'S',
   'settings.fontSize.m': 'M',
   'settings.fontSize.l': 'L',
+  'settings.fontSize.aria.s': 'Small text size',
+  'settings.fontSize.aria.m': 'Medium text size',
+  'settings.fontSize.aria.l': 'Large text size',
   'state.paused': 'Paused.',
   'state.pausedWithTime': 'Paused at {time} remaining.',
   'state.done': 'Finished.',

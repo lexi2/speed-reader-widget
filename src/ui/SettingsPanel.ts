@@ -2,7 +2,7 @@ import type { Scheduler } from '../core/scheduler';
 import type { Store } from '../core/state';
 import type { FontPreference, FontSizePreference, ReaderState } from '../core/types';
 import { applyFont, applyFontSize, persistThemeChoice, resolveTheme } from '../theme/theme';
-import { setButtonLabel } from './button-label';
+import { setButtonLabel, setHoverHint } from './button-label';
 import { icons } from './icons';
 import { cancelCountdown } from './playback';
 import { t } from '../i18n';
@@ -21,7 +21,7 @@ export function mountSettingsPanel(
   if (!trigger || !panel || !closeBtn) return () => {};
 
   closeBtn.innerHTML = icons.exit;
-  setButtonLabel(closeBtn, t('control.closeSettings'));
+  setButtonLabel(closeBtn, t('control.closeSettings'), true);
 
   const themeGroup = panel.querySelector('[data-settings-theme]') as HTMLElement | null;
   const fontGroup = panel.querySelector('[data-settings-font]') as HTMLElement | null;
@@ -37,16 +37,31 @@ export function mountSettingsPanel(
 
   for (const btn of panel.querySelectorAll<HTMLButtonElement>('[data-font-pick]')) {
     const font = btn.dataset.fontPick;
-    if (font) btn.textContent = t(`settings.font.${font}` as Parameters<typeof t>[0]);
+    if (font) {
+      const label = t(`settings.font.${font}` as Parameters<typeof t>[0]);
+      btn.textContent = label;
+      setHoverHint(btn, label);
+    }
   }
   for (const btn of panel.querySelectorAll<HTMLButtonElement>('[data-font-size-pick]')) {
     const size = btn.dataset.fontSizePick;
-    if (size) btn.textContent = t(`settings.fontSize.${size}` as Parameters<typeof t>[0]);
+    if (size) {
+      btn.textContent = t(`settings.fontSize.${size}` as Parameters<typeof t>[0]);
+      setButtonLabel(btn, t(`settings.fontSize.aria.${size}` as Parameters<typeof t>[0]), true);
+    }
   }
   for (const btn of panel.querySelectorAll<HTMLButtonElement>('[data-theme-pick]')) {
     const pick = btn.dataset.themePick;
-    if (pick === 'light') btn.textContent = t('control.label.light');
-    if (pick === 'dark') btn.textContent = t('control.label.dark');
+    if (pick === 'light') {
+      const label = t('control.label.light');
+      btn.textContent = label;
+      setHoverHint(btn, label);
+    }
+    if (pick === 'dark') {
+      const label = t('control.label.dark');
+      btn.textContent = label;
+      setHoverHint(btn, label);
+    }
   }
 
   const handlers: Array<{ el: Element; fn: EventListener }> = [];
@@ -64,6 +79,10 @@ export function mountSettingsPanel(
   const setOpen = (open: boolean) => {
     if (open && !store.get().settingsOpen) pauseForSettings();
     store.set({ settingsOpen: open });
+    if (open) {
+      trigger.blur();
+      closeBtn.focus();
+    }
   };
 
   const onTriggerClick = () => setOpen(!store.get().settingsOpen);

@@ -144,8 +144,10 @@ export function mountControls(
       const expanded = state.expanded;
       fs.btn.disabled = inCountdown;
       fs.btn.innerHTML = expanded ? icons.fullscreenExit : icons.fullscreen;
-      setButtonLabel(fs.btn, t(expanded ? 'control.exitFullscreen' : 'control.fullscreen'));
-      fs.label.textContent = t('control.label.fullscreen');
+      const fsKey = expanded ? 'control.exitFullscreen' : 'control.fullscreen';
+      const fsLabelKey = expanded ? 'control.label.exitFullscreen' : 'control.label.fullscreen';
+      setButtonLabel(fs.btn, t(fsKey));
+      fs.label.textContent = t(fsLabelKey);
       fs.btn.setAttribute('aria-pressed', String(expanded));
       host.toggleAttribute('data-expanded', expanded);
     }
@@ -188,6 +190,7 @@ function appendControl(container: HTMLElement, spec: ButtonSpec): ControlRefs {
 
   const label = document.createElement('span');
   label.className = 'control-item__label';
+  label.setAttribute('aria-hidden', 'true');
   label.textContent = t(spec.labelKey);
 
   wrap.appendChild(btn);

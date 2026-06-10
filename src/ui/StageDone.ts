@@ -20,6 +20,7 @@ export function mountStageDone(
 
   btn.innerHTML = icons.restart;
   setButtonLabel(btn, t('done.again'));
+  label.setAttribute('aria-hidden', 'true');
   label.textContent = t('done.again');
   btn.setAttribute('aria-keyshortcuts', 'R');
 
