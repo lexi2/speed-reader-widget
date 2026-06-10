@@ -331,30 +331,6 @@
   font-weight: 600;
 }
 
-.toolbar-bottom {
-  transition: transform var(--rsvp-transition), opacity var(--rsvp-transition);
-}
-
-.toolbar-bottom[data-toolbar-hidden] {
-  transform: translateY(110%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.stage[data-tap-hint]::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 3rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.12), transparent);
-  pointer-events: none;
-  z-index: 0;
-}
-
-:host([data-toolbar-compact]) .toolbar-bottom .control-item__label {
-  display: none;
-}
-
 .btn {
   position: relative;
   background: transparent;

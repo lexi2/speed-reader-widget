@@ -20,7 +20,6 @@ import { mountImmersive } from '../ui/immersive';
 import { mountSettingsPanel } from '../ui/SettingsPanel';
 import { mountStageDone } from '../ui/StageDone';
 import { mountStagePlay } from '../ui/StagePlay';
-import { mountToolbarVisibility } from '../ui/ToolbarVisibility';
 import { cancelCountdown } from '../ui/playback';
 import { mountOverlay } from '../ui/Overlay';
 import { mountKeyboard } from '../a11y/keyboard';
@@ -129,7 +128,6 @@ export class RsvpReader extends HTMLElement {
     this.teardown.push(mountStageDone(this.root, this.store, this.scheduler));
     this.teardown.push(mountControls(this, this.root, this.store, this.scheduler, () => this.exit()));
     this.teardown.push(mountSettingsPanel(this, this.root, this.store));
-    this.teardown.push(mountToolbarVisibility(this, this.root, this.store));
     this.teardown.push(mountLiveRegion(this.root, this.store));
     this.teardown.push(mountKeyboard(this, this.store, this.scheduler, () => this.exit()));
 
