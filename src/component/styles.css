@@ -436,6 +436,12 @@
 }
 
 .btn svg { width: 18px; height: 18px; }
+
+.btn[data-control="skipBack"] svg,
+.btn[data-control="skipForward"] svg {
+  width: 24px;
+  height: 24px;
+}
 .btn[hidden] { display: none; }
 
 .sr-only {

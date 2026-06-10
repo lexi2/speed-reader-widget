@@ -1,13 +1,15 @@
 const stroke = 'currentColor';
 const baseAttrs = `width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"`;
+const skipAttrs = `width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"`;
+const skipTen = `<text x="12" y="12.85" text-anchor="middle" dominant-baseline="middle" font-size="6.75" font-weight="500" fill="${stroke}" stroke="none" font-family="ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,sans-serif">10</text>`;
 
 export const icons = {
   play: `<svg ${baseAttrs}><polygon points="6 4 20 12 6 20 6 4" fill="currentColor" stroke="none"></polygon></svg>`,
   pause: `<svg ${baseAttrs}><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`,
   faster: `<svg ${baseAttrs}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
   slower: `<svg ${baseAttrs}><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
-  skipBack: `<svg ${baseAttrs}><polyline points="13 17 8 12 13 7"></polyline><polyline points="20 17 15 12 20 7"></polyline></svg>`,
-  skipForward: `<svg ${baseAttrs}><polyline points="11 17 16 12 11 7"></polyline><polyline points="4 17 9 12 4 7"></polyline></svg>`,
+  skipBack: `<svg ${skipAttrs}><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>${skipTen}</svg>`,
+  skipForward: `<svg ${skipAttrs}><g transform="translate(24,0) scale(-1,1)"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></g>${skipTen}</svg>`,
   restart: `<svg ${baseAttrs}><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>`,
   exit: `<svg ${baseAttrs}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
   sun: `<svg ${baseAttrs}><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>`,
