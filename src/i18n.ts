@@ -25,6 +25,8 @@ type StringKey =
   | 'control.label.dark'
   | 'control.label.light'
   | 'control.label.settings'
+  | 'control.label.fullscreen'
+  | 'control.label.closeSettings'
   | 'settings.title'
   | 'settings.theme'
   | 'settings.font'
