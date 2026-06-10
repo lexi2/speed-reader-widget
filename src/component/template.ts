@@ -6,6 +6,7 @@ export function buildTemplate(): string {
 <style>${tokensCss}${componentCss}</style>
 <div class="backdrop" part="backdrop" hidden></div>
 <div class="root" part="root" role="region" aria-label="Speed reader">
+  <div class="root__body">
   <div class="toolbar-top" part="toolbar-top">
     <div class="toolbar-top__left" data-slot="top-left"></div>
     <div class="toolbar-top__right" data-slot="top-right"></div>
@@ -39,6 +40,9 @@ export function buildTemplate(): string {
     <div class="toolbar-bottom__center" data-slot="bottom-center"></div>
     <div class="toolbar-bottom__right" data-slot="bottom-right"></div>
   </div>
+  <div class="empty" data-state="empty" hidden></div>
+  <div class="sr-only" data-live aria-live="polite" aria-atomic="true"></div>
+  </div>
   <div class="settings-panel" id="rsvp-settings-panel" data-settings-panel hidden role="dialog" aria-modal="false" aria-labelledby="rsvp-settings-title">
     <div class="settings-panel__header">
       <h2 class="settings-panel__title" id="rsvp-settings-title" data-settings-title>Settings</h2>
@@ -69,8 +73,6 @@ export function buildTemplate(): string {
       </div>
     </div>
   </div>
-  <div class="empty" data-state="empty" hidden></div>
-  <div class="sr-only" data-live aria-live="polite" aria-atomic="true"></div>
 </div>
 `.trim();
 }

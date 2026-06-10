@@ -12,7 +12,7 @@ export function requestPlayback(
   scheduler: Scheduler,
 ): void {
   const state = store.get();
-  if (state.status === 'countdown') return;
+  if (state.settingsOpen || state.status === 'countdown') return;
   if (state.status === 'idle') {
     cancelCountdown();
     activeCancel = runCountdown(store, () => {

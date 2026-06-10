@@ -1,8 +1,10 @@
+import type { Scheduler } from '../core/scheduler';
 import type { Store } from '../core/state';
 import type { FontPreference, FontSizePreference, ReaderState } from '../core/types';
 import { applyFont, applyFontSize, persistThemeChoice, resolveTheme } from '../theme/theme';
 import { setButtonLabel } from './button-label';
 import { icons } from './icons';
+import { cancelCountdown } from './playback';
 import { t } from '../i18n';
 
 type ThemePick = 'light' | 'dark';
@@ -11,6 +13,7 @@ export function mountSettingsPanel(
   host: HTMLElement,
   root: ShadowRoot,
   store: Store<ReaderState>,
+  scheduler: Scheduler,
 ): () => void {
   const trigger = root.querySelector('[data-control="settings"]') as HTMLButtonElement | null;
   const panel = root.querySelector('[data-settings-panel]') as HTMLElement | null;
@@ -53,7 +56,13 @@ export function mountSettingsPanel(
     handlers.push({ el, fn });
   };
 
+  const pauseForSettings = () => {
+    cancelCountdown();
+    if (store.get().status === 'playing') scheduler.pause();
+  };
+
   const setOpen = (open: boolean) => {
+    if (open && !store.get().settingsOpen) pauseForSettings();
     store.set({ settingsOpen: open });
   };
 
@@ -105,6 +114,7 @@ export function mountSettingsPanel(
     const open = state.settingsOpen;
     host.toggleAttribute('data-settings-open', open);
     panel.hidden = !open;
+    panel.setAttribute('aria-modal', String(open));
 
     if (themeGroup) {
       const active = state.theme === 'light' || state.theme === 'dark'

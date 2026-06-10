@@ -82,6 +82,68 @@ test('settings dyslexic font loads Atkinson Hyperlegible in shadow DOM', async (
   expect(renderInfo.rendersAtkinson).toBe(true);
 });
 
+test('settings panel covers the reader card', async ({ page }) => {
+  await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    root.querySelector<HTMLButtonElement>('button[data-control="settings"]')?.click();
+  });
+
+  const layout = await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    const card = root.querySelector('.root') as HTMLElement;
+    const panel = root.querySelector('[data-settings-panel]') as HTMLElement;
+    const cardRect = card.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const tol = 2;
+    return {
+      widthMatch: Math.abs(cardRect.width - panelRect.width) <= tol,
+      heightMatch: Math.abs(cardRect.height - panelRect.height) <= tol,
+      topMatch: Math.abs(cardRect.top - panelRect.top) <= tol,
+      leftMatch: Math.abs(cardRect.left - panelRect.left) <= tol,
+    };
+  });
+
+  expect(layout.widthMatch).toBe(true);
+  expect(layout.heightMatch).toBe(true);
+  expect(layout.topMatch).toBe(true);
+  expect(layout.leftMatch).toBe(true);
+});
+
+test('settings pauses playback and requires play to resume', async ({ page }) => {
+  await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    root.querySelector<HTMLButtonElement>('[data-control="play"]')?.click();
+  });
+  await expect(reader(page).locator('.root')).toContainText('Playing', { timeout: 5000 });
+
+  await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    root.querySelector<HTMLButtonElement>('button[data-control="settings"]')?.click();
+  });
+
+  await expect(reader(page).locator('.root')).toContainText('Paused');
+
+  await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    root.querySelector<HTMLButtonElement>('[data-settings-close]')?.click();
+  });
+
+  await expect(reader(page).locator('.root')).toContainText('Paused');
+
+  const statusAfterClose = await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    return root.querySelector('[data-meta="status"]')?.textContent?.trim();
+  });
+  expect(statusAfterClose).toBe('Paused');
+
+  await page.waitForTimeout(800);
+  const statusAfterWait = await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    return root.querySelector('[data-meta="status"]')?.textContent?.trim();
+  });
+  expect(statusAfterWait).toBe('Paused');
+});
+
 test('settings font size applies data-font-size attribute', async ({ page }) => {
   await reader(page).evaluate((el: Element) => {
     const root = (el as HTMLElement).shadowRoot!;
