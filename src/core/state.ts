@@ -45,6 +45,7 @@ export function createReaderStore(initial: Partial<ReaderState> = {}): Store<Rea
     fontSize: 'm',
     alwaysShowToolbar: false,
     settingsOpen: false,
+    expanded: false,
     totalWords: 0,
     words: [],
     ...initial,

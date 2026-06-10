@@ -46,7 +46,13 @@ export function mountKeyboard(
         break;
       case 'Escape':
         e.preventDefault();
-        onExit();
+        if (store.get().settingsOpen) {
+          store.set({ settingsOpen: false });
+        } else if (store.get().expanded) {
+          store.set({ expanded: false });
+        } else {
+          onExit();
+        }
         break;
     }
   };

@@ -14,6 +14,7 @@ export interface ReaderState {
   fontSize: FontSizePreference;
   alwaysShowToolbar: boolean;
   settingsOpen: boolean;
+  expanded: boolean;
   totalWords: number;
   words: string[];
 }

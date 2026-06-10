@@ -4,6 +4,7 @@ import { WPM_MAX, WPM_MIN, WPM_STEP } from '../core/types';
 import type { Scheduler } from '../core/scheduler';
 import { icons } from './icons';
 import { setButtonLabel } from './button-label';
+import { isMobileViewport } from '../utils/mobile';
 import { requestPlayback } from './playback';
 import { t } from '../i18n';
 
@@ -40,10 +41,6 @@ interface ControlRefs {
   label: HTMLElement;
 }
 
-function fullscreenSupported(el: Element): boolean {
-  return typeof (el as HTMLElement & { requestFullscreen?: () => Promise<void> }).requestFullscreen === 'function';
-}
-
 export function mountControls(
   host: HTMLElement,
   root: ShadowRoot,
@@ -65,10 +62,10 @@ export function mountControls(
     refs[spec.key] = appendControl(container, spec);
   }
 
-  const fsSupported = fullscreenSupported(host);
-  if (refs.fullscreen) {
-    refs.fullscreen.wrap.hidden = !fsSupported;
-  }
+  const updateFullscreenVisibility = () => {
+    if (refs.fullscreen) refs.fullscreen.wrap.hidden = isMobileViewport();
+  };
+  updateFullscreenVisibility();
   const settingsBtn = refs.settings?.btn;
   if (settingsBtn) {
     settingsBtn.setAttribute('aria-controls', 'rsvp-settings-panel');
@@ -97,18 +94,9 @@ export function mountControls(
         scheduler.restart();
         requestPlayback(store, scheduler);
         break;
-      case 'fullscreen': {
-        const el = host as HTMLElement & {
-          requestFullscreen?: () => Promise<void>;
-          exitFullscreen?: () => Promise<void>;
-        };
-        if (document.fullscreenElement === host) {
-          void el.exitFullscreen?.().catch(() => {});
-        } else {
-          void el.requestFullscreen?.().catch(() => {});
-        }
+      case 'fullscreen':
+        store.set({ expanded: !store.get().expanded });
         break;
-      }
       case 'exit':
         onExit();
         break;
@@ -124,19 +112,6 @@ export function mountControls(
     ref.btn.addEventListener('click', fn);
     handlers.push({ btn: ref.btn, fn });
   }
-
-  const updateFullscreenBtn = () => {
-    const fs = refs.fullscreen;
-    if (!fs || !fsSupported) return;
-    const active = document.fullscreenElement === host;
-    fs.btn.innerHTML = active ? icons.fullscreenExit : icons.fullscreen;
-    setButtonLabel(fs.btn, t(active ? 'control.exitFullscreen' : 'control.fullscreen'));
-    fs.label.textContent = t('control.label.fullscreen');
-    fs.btn.setAttribute('aria-pressed', String(active));
-  };
-
-  const onFullscreenChange = () => updateFullscreenBtn();
-  document.addEventListener('fullscreenchange', onFullscreenChange);
 
   const renderPlayState = (state: ReaderState) => {
     const play = refs.play!;
@@ -165,7 +140,14 @@ export function mountControls(
     exit.btn.disabled = inCountdown;
 
     if (refs.fullscreen) {
-      refs.fullscreen.btn.disabled = inCountdown;
+      const fs = refs.fullscreen;
+      const expanded = state.expanded;
+      fs.btn.disabled = inCountdown;
+      fs.btn.innerHTML = expanded ? icons.fullscreenExit : icons.fullscreen;
+      setButtonLabel(fs.btn, t(expanded ? 'control.exitFullscreen' : 'control.fullscreen'));
+      fs.label.textContent = t('control.label.fullscreen');
+      fs.btn.setAttribute('aria-pressed', String(expanded));
+      host.toggleAttribute('data-expanded', expanded);
     }
 
     const lockNav = inCountdown;
@@ -176,13 +158,16 @@ export function mountControls(
     refs.restart!.btn.disabled = lockNav;
   };
 
-  updateFullscreenBtn();
+  const onResize = () => updateFullscreenVisibility();
+  window.addEventListener('resize', onResize);
+
   renderPlayState(store.get());
   const unsub = store.subscribe(renderPlayState);
 
   return () => {
     unsub();
-    document.removeEventListener('fullscreenchange', onFullscreenChange);
+    window.removeEventListener('resize', onResize);
+    host.removeAttribute('data-expanded');
     for (const { btn, fn } of handlers) btn.removeEventListener('click', fn);
     for (const el of slots.values()) el.innerHTML = '';
   };

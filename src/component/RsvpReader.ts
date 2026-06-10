@@ -215,7 +215,7 @@ export class RsvpReader extends HTMLElement {
   /** Public API: close / hide the reader */
   exit(): void {
     cancelCountdown();
-    this.store?.set({ settingsOpen: false });
+    this.store?.set({ settingsOpen: false, expanded: false });
     this.scheduler.pause();
     this.dispatchEvent(new CustomEvent('rsvp:exit', { bubbles: true, composed: true }));
     if (!this.hasAttribute('persistent')) this.remove();
