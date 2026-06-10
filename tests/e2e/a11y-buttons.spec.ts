@@ -73,6 +73,24 @@ test('desktop toolbar labels appear on hover', async ({ page }) => {
   await expect(label).toHaveText('Play reader');
 });
 
+test('only one bottom toolbar label visible at a time', async ({ page }) => {
+  const playWrap = reader(page).locator('[data-control-wrap="play"]');
+  const forwardWrap = reader(page).locator('[data-control-wrap="skipForward"]');
+
+  await playWrap.hover();
+  await expect(playWrap.locator('.control-item__label')).toBeVisible();
+  await expect(forwardWrap.locator('.control-item__label')).toBeHidden();
+});
+
+test('fullscreen collapse label hidden after toggle without hover', async ({ page }) => {
+  const fsWrap = reader(page).locator('[data-control-wrap="fullscreen"]');
+  await fsWrap.locator('[data-control="fullscreen"]').click();
+  await expect(reader(page)).toHaveAttribute('data-expanded', '');
+
+  await reader(page).locator('.stage').hover();
+  await expect(fsWrap.locator('.control-item__label')).toBeHidden();
+});
+
 test('play button hover hint updates when playing', async ({ page }) => {
   const playWrap = reader(page).locator('[data-control-wrap="play"]');
   await playWrap.locator('[data-control="play"]').click();

@@ -96,6 +96,7 @@ export function mountControls(
         break;
       case 'fullscreen':
         store.set({ expanded: !store.get().expanded });
+        refs.fullscreen?.btn.blur();
         break;
       case 'exit':
         onExit();
