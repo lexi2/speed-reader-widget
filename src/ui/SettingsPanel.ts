@@ -23,7 +23,6 @@ export function mountSettingsPanel(
   const themeGroup = panel.querySelector('[data-settings-theme]') as HTMLElement | null;
   const fontGroup = panel.querySelector('[data-settings-font]') as HTMLElement | null;
   const sizeGroup = panel.querySelector('[data-settings-font-size]') as HTMLElement | null;
-  const toolbarToggle = panel.querySelector('[data-settings-toolbar-toggle]') as HTMLInputElement | null;
 
   const title = panel.querySelector('[data-settings-title]');
   if (title) title.textContent = t('settings.title');
@@ -102,12 +101,6 @@ export function mountSettingsPanel(
     }
   }
 
-  if (toolbarToggle) {
-    toolbarToggle.addEventListener('change', () => {
-      store.set({ alwaysShowToolbar: toolbarToggle.checked });
-    });
-  }
-
   const render = (state: ReaderState) => {
     const open = state.settingsOpen;
     host.toggleAttribute('data-settings-open', open);
@@ -135,7 +128,6 @@ export function mountSettingsPanel(
       }
     }
 
-    if (toolbarToggle) toolbarToggle.checked = state.alwaysShowToolbar;
   };
 
   render(store.get());
@@ -146,6 +138,5 @@ export function mountSettingsPanel(
     host.removeAttribute('data-settings-open');
     trigger.removeEventListener('click', onTriggerClick);
     for (const { el, fn } of handlers) el.removeEventListener('click', fn);
-    if (toolbarToggle) toolbarToggle.replaceWith(toolbarToggle.cloneNode(true));
   };
 }

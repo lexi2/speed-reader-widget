@@ -36,7 +36,6 @@ type StringKey =
   | 'settings.fontSize.s'
   | 'settings.fontSize.m'
   | 'settings.fontSize.l'
-  | 'settings.alwaysShowToolbar'
   | 'state.paused'
   | 'state.pausedWithTime'
   | 'state.done'
@@ -92,7 +91,6 @@ const en: Locale = {
   'settings.fontSize.s': 'S',
   'settings.fontSize.m': 'M',
   'settings.fontSize.l': 'L',
-  'settings.alwaysShowToolbar': 'Always show controls',
   'state.paused': 'Paused.',
   'state.pausedWithTime': 'Paused at {time} remaining.',
   'state.done': 'Finished.',

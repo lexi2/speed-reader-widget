@@ -245,18 +245,19 @@
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 5;
-  width: min(360px, calc(100vw - 2rem));
-  max-height: min(80vh, 520px);
+  width: min(400px, calc(100vw - 2rem));
+  max-height: min(80vh, 560px);
   overflow-y: auto;
   background: var(--rsvp-bg);
   border: 1px solid var(--rsvp-border);
   border-radius: var(--rsvp-radius);
   box-shadow: var(--rsvp-shadow-overlay);
-  padding: 1.25rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
   pointer-events: auto;
+  font-size: 16px;
 }
 .settings-panel[hidden] { display: none; }
 
@@ -269,31 +270,26 @@
 
 .settings-panel__title {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.25em;
   font-weight: 600;
   color: var(--rsvp-fg);
 }
 
 .settings-panel__close {
   flex-shrink: 0;
-  padding: 0.4rem;
-  min-width: 2rem;
-  min-height: 2rem;
+  padding: 0.5em;
+  min-width: 2.5em;
+  min-height: 2.5em;
 }
 
 .settings-panel__section {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.settings-panel__section--row {
-  flex-direction: row;
-  align-items: center;
+  gap: 0.625em;
 }
 
 .settings-panel__label {
-  font-size: 0.8rem;
+  font-size: 0.875em;
   font-weight: 600;
   color: var(--rsvp-muted);
 }
@@ -317,9 +313,10 @@
   background: transparent;
   color: var(--rsvp-fg);
   font-family: inherit;
-  font-size: 0.8rem;
+  font-size: 0.9375em;
   font-weight: 500;
-  padding: 0.5rem 0.85rem;
+  padding: 0.625em 1.125em;
+  min-height: 2.75em;
   cursor: pointer;
   transition: background var(--rsvp-transition), color var(--rsvp-transition);
 }
@@ -332,21 +329,6 @@
   background: var(--rsvp-accent);
   color: var(--rsvp-on-accent);
   font-weight: 600;
-}
-
-.settings-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--rsvp-fg);
-  cursor: pointer;
-}
-
-.settings-toggle input {
-  width: 1.1rem;
-  height: 1.1rem;
-  accent-color: var(--rsvp-accent);
 }
 
 .toolbar-bottom {
@@ -561,7 +543,26 @@
 
 :host([data-mobile-immersive]) .settings-panel {
   z-index: 2;
-  max-height: min(60dvh, 380px);
+  max-height: min(70dvh, 420px);
+}
+
+@media (min-width: 481px) {
+  .settings-panel {
+    width: min(440px, calc(100vw - 3rem));
+    padding: 1.75rem 2rem;
+    gap: 1.5rem;
+    font-size: 17px;
+  }
+
+  .settings-panel__title {
+    font-size: 1.35em;
+  }
+}
+
+:host(:fullscreen) .settings-panel {
+  width: min(480px, 92vw);
+  font-size: 18px;
+  padding: 2rem;
 }
 
 @media (max-width: 480px) {

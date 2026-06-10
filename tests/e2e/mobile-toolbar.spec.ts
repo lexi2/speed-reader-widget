@@ -45,15 +45,11 @@ test('mobile: stage tap toggles toolbar visibility', async ({ page }) => {
 });
 
 test('mobile: always show toolbar pref prevents auto-hide', async ({ page }) => {
-  await reader(page).evaluate((el: Element) => {
-    const root = (el as HTMLElement).shadowRoot!;
-    root.querySelector<HTMLButtonElement>('button[data-control="settings"]')?.click();
-    const toggle = root.querySelector<HTMLInputElement>('[data-settings-toolbar-toggle]');
-    if (toggle) {
-      toggle.checked = true;
-      toggle.dispatchEvent(new Event('change', { bubbles: true }));
-    }
+  await page.evaluate(() => {
+    localStorage.setItem('rsvp-reader:prefs', JSON.stringify({ alwaysShowToolbar: true }));
   });
+  await page.goto('/ghost-post-fixture.html');
+  await page.locator('button.rsvp-reader-trigger').click();
 
   await startReading(page, reader(page));
   await page.waitForTimeout(3500);

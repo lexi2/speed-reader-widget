@@ -68,12 +68,6 @@ export function buildTemplate(): string {
         <button type="button" class="settings-segmented__btn" data-font-size-pick="l">L</button>
       </div>
     </div>
-    <div class="settings-panel__section settings-panel__section--row">
-      <label class="settings-toggle">
-        <input type="checkbox" data-settings-toolbar-toggle />
-        <span data-i18n="settings.alwaysShowToolbar">Always show controls</span>
-      </label>
-    </div>
   </div>
   <div class="empty" data-state="empty" hidden></div>
   <div class="sr-only" data-live aria-live="polite" aria-atomic="true"></div>
