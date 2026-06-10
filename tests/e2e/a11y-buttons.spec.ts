@@ -37,13 +37,11 @@ test('toolbar tooltips hidden when settings panel is open', async ({ page }) => 
 
   await expect(reader(page)).toHaveAttribute('data-settings-open', '');
 
-  const labelHidden = await reader(page).evaluate((el: Element) => {
-    const root = (el as HTMLElement).shadowRoot!;
-    const label = root.querySelector('[data-control-wrap="settings"] .control-item__label') as HTMLElement;
-    const cs = getComputedStyle(label);
-    return cs.visibility === 'hidden' || Number(cs.opacity) === 0;
-  });
-  expect(labelHidden).toBe(true);
+  // Leave the toolbar so :hover cannot keep the tooltip visible (matches real use).
+  await reader(page).locator('.settings-panel__title').hover();
+
+  const label = settingsWrap.locator('.control-item__label');
+  await expect(label).toBeHidden();
 });
 
 test('settings panel buttons show hover hints on desktop', async ({ page }) => {

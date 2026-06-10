@@ -32,11 +32,6 @@
   overflow: hidden;
 }
 
-:host([data-settings-open]) .root__body .control-item__label {
-  opacity: 0;
-  visibility: hidden;
-}
-
 .stage {
   position: relative;
   min-height: clamp(120px, 18vh, 200px);
@@ -274,6 +269,13 @@
   .control-item:focus-within .control-item__label {
     opacity: 1;
     visibility: visible;
+  }
+
+  :host([data-settings-open]) .root__body .control-item__label,
+  :host([data-settings-open]) .root__body .control-item:hover .control-item__label,
+  :host([data-settings-open]) .root__body .control-item:focus-within .control-item__label {
+    opacity: 0;
+    visibility: hidden;
   }
 
   .control-item--primary .control-item__label {
