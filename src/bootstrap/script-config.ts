@@ -24,7 +24,10 @@ export function readScriptConfig(): RsvpConfig {
   const accent = script.dataset.accent?.trim() || null;
   const font = isFont(script.dataset.font) ? script.dataset.font : DEFAULT_CONFIG.font;
 
-  return { wpm, theme, mode, sourceSelector, position, lang, accent, font };
+  const zIndexAttr = parseInt(script.dataset.zIndex ?? '', 10);
+  const zIndex = Number.isFinite(zIndexAttr) ? zIndexAttr : null;
+
+  return { wpm, theme, mode, sourceSelector, position, lang, accent, font, zIndex };
 }
 
 function isFont(v: string | undefined): v is FontPreference {

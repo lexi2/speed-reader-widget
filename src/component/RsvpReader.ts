@@ -26,6 +26,7 @@ import { mountKeyboard } from '../a11y/keyboard';
 import { mountLiveRegion } from '../a11y/live-region';
 import { t, setLocale } from '../i18n';
 import { reportError } from '../observability/errors';
+import { clearPortalIfEmpty } from '../ui/portal';
 
 const ATTR = {
   TEXT: 'text',
@@ -36,6 +37,7 @@ const ATTR = {
   LANG: 'lang',
   ACCENT: 'accent',
   FONT: 'font',
+  Z_INDEX: 'z-index',
 } as const;
 
 export class RsvpReader extends HTMLElement {
@@ -91,6 +93,7 @@ export class RsvpReader extends HTMLElement {
     applyFont(this, initialFont);
     applyFontSize(this, initialFontSize);
     this.setAttribute('data-mode', this.getAttribute(ATTR.MODE) ?? DEFAULT_CONFIG.mode);
+    applyZIndex(this);
 
     // System theme watcher only matters for 'auto'
     this.teardown.push(
@@ -218,7 +221,10 @@ export class RsvpReader extends HTMLElement {
     this.store?.set({ settingsOpen: false, expanded: false });
     this.scheduler.pause();
     this.dispatchEvent(new CustomEvent('rsvp:exit', { bubbles: true, composed: true }));
-    if (!this.hasAttribute('persistent')) this.remove();
+    if (!this.hasAttribute('persistent')) {
+      this.remove();
+      clearPortalIfEmpty();
+    }
   }
 
   private loadTextFromAttributes(): void {
@@ -259,6 +265,13 @@ export class RsvpReader extends HTMLElement {
 function clampWpm(n: number): number {
   if (!Number.isFinite(n) || n <= 0) return DEFAULT_CONFIG.wpm;
   return Math.max(WPM_MIN, Math.min(WPM_MAX, n));
+}
+
+function applyZIndex(host: HTMLElement): void {
+  const raw = host.getAttribute('z-index');
+  if (!raw) return;
+  const n = parseInt(raw, 10);
+  if (Number.isFinite(n)) host.style.setProperty('--rsvp-z-index', String(n));
 }
 
 export function registerElement(): void {

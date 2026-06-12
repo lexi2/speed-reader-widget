@@ -25,6 +25,8 @@
   --rsvp-line-height: 1.2;
 
   --rsvp-transition: 120ms ease;
+
+  --rsvp-z-index: 2147483647;
 }
 
 :host([data-theme="dark"]) {

@@ -1,4 +1,5 @@
 import { isMobileViewport } from '../utils/mobile';
+import { syncReaderMount } from './portal';
 
 /** Mobile: centered overlay card with backdrop (inline mode). Overlay mode uses mountOverlay. */
 export function mountImmersive(
@@ -18,6 +19,7 @@ export function mountImmersive(
 
   const update = () => {
     const mobile = isMobileViewport();
+    syncReaderMount(host);
     host.toggleAttribute('data-mobile-immersive', mobile);
     if (backdrop && !isOverlayMode()) {
       backdrop.hidden = !mobile;

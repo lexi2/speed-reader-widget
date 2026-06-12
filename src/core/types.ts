@@ -33,6 +33,7 @@ export interface RsvpConfig {
   lang: string;
   accent: string | null;
   font: FontPreference;
+  zIndex: number | null;
 }
 
 export const DEFAULT_CONFIG: RsvpConfig = {
@@ -44,6 +45,7 @@ export const DEFAULT_CONFIG: RsvpConfig = {
   lang: 'en',
   accent: null,
   font: 'sans',
+  zIndex: null,
 };
 
 export const WPM_MIN = 100;

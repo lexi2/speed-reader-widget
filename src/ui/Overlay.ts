@@ -40,7 +40,7 @@ export function mountOverlay(
   // Set inert on siblings to prevent screen reader / focus reaching them
   const siblings: Array<{ el: Element; prev: boolean }> = [];
   for (const child of Array.from(document.body.children)) {
-    if (child === host) continue;
+    if (child === host || child.contains(host)) continue;
     const el = child as HTMLElement;
     siblings.push({ el, prev: el.inert });
     el.inert = true;

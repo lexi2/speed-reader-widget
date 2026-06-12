@@ -2,6 +2,13 @@ import { icons } from './icons';
 import { t } from '../i18n';
 import type { RsvpConfig } from '../core/types';
 import type { RsvpReader } from '../component/RsvpReader';
+import { isMobileViewport } from '../utils/mobile';
+import {
+  clearPortalIfEmpty,
+  mountReaderInline,
+  mountReaderToBody,
+  setReaderAnchor,
+} from './portal';
 
 /**
  * Builds the "Read faster" call-to-action and inserts it above the article.
@@ -36,6 +43,7 @@ function openReader(article: Element, trigger: HTMLButtonElement, config: RsvpCo
   const existing = document.querySelector('rsvp-reader[data-rsvp-auto]');
   if (existing) {
     existing.remove();
+    clearPortalIfEmpty();
     return;
   }
 
@@ -47,11 +55,13 @@ function openReader(article: Element, trigger: HTMLButtonElement, config: RsvpCo
   reader.setAttribute('lang', config.lang);
   if (config.accent) reader.setAttribute('accent', config.accent);
   if (config.font !== 'sans') reader.setAttribute('font', config.font);
+  if (config.zIndex != null) reader.setAttribute('z-index', String(config.zIndex));
 
-  if (config.mode === 'overlay') {
-    document.body.appendChild(reader);
+  setReaderAnchor(reader, trigger);
+  if (config.mode === 'overlay' || isMobileViewport()) {
+    mountReaderToBody(reader);
   } else {
-    trigger.insertAdjacentElement('afterend', reader);
+    mountReaderInline(reader, trigger);
   }
 
   // Hand off the article *element* (not its textContent) so the parser can
