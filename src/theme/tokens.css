@@ -9,6 +9,17 @@
   --rsvp-border: #e4e4e7;
   --rsvp-accent: #04395E;
   --rsvp-on-accent: #ffffff;
+  --rsvp-accent-muted: color-mix(in srgb, var(--rsvp-accent) 12%, var(--rsvp-bg));
+  --rsvp-accent-hover: color-mix(in srgb, var(--rsvp-accent) 20%, var(--rsvp-bg));
+  --rsvp-accent-active: color-mix(in srgb, var(--rsvp-accent) 28%, var(--rsvp-bg));
+  --rsvp-accent-border-hover: color-mix(in srgb, var(--rsvp-accent) 45%, var(--rsvp-border));
+  --rsvp-accent-hover-fg: var(--rsvp-accent);
+  --rsvp-accent-fill-hover: color-mix(in srgb, var(--rsvp-accent) 88%, white);
+  --rsvp-accent-fill-active: color-mix(in srgb, var(--rsvp-accent) 76%, white);
+  --rsvp-accent-on: var(--rsvp-focus);
+  --rsvp-on-accent-on: #18181b;
+  --rsvp-accent-on-hover: color-mix(in srgb, var(--rsvp-accent-on) 88%, white);
+  --rsvp-accent-on-active: color-mix(in srgb, var(--rsvp-accent-on) 76%, white);
   --rsvp-orp: #FE7F2D;
   --rsvp-focus: #5386E4;
 
@@ -48,6 +59,17 @@
   --rsvp-border: #27272a;
   --rsvp-accent: #04395E;
   --rsvp-on-accent: #ffffff;
+  --rsvp-accent-muted: color-mix(in srgb, var(--rsvp-accent) 12%, var(--rsvp-bg));
+  --rsvp-accent-hover: color-mix(in srgb, var(--rsvp-accent) 20%, var(--rsvp-bg));
+  --rsvp-accent-active: color-mix(in srgb, var(--rsvp-accent) 28%, var(--rsvp-bg));
+  --rsvp-accent-border-hover: color-mix(in srgb, var(--rsvp-accent) 45%, var(--rsvp-border));
+  --rsvp-accent-hover-fg: var(--rsvp-focus);
+  --rsvp-accent-fill-hover: color-mix(in srgb, var(--rsvp-accent) 88%, white);
+  --rsvp-accent-fill-active: color-mix(in srgb, var(--rsvp-accent) 76%, white);
+  --rsvp-accent-on: var(--rsvp-focus);
+  --rsvp-on-accent-on: #18181b;
+  --rsvp-accent-on-hover: color-mix(in srgb, var(--rsvp-accent-on) 88%, white);
+  --rsvp-accent-on-active: color-mix(in srgb, var(--rsvp-accent-on) 76%, white);
   --rsvp-orp: #FE7F2D;
   --rsvp-focus: #5386E4;
 }

@@ -127,3 +127,46 @@ test('light mode: stage idle hint passes WCAG AA contrast', async ({ page }) => 
 
   expect(ratio).toBeGreaterThanOrEqual(AA_BODY);
 });
+
+for (const theme of ['light', 'dark'] as const) {
+  test(`${theme} mode: toolbar button hover passes WCAG AA contrast`, async ({ page }) => {
+    await page.goto('/ghost-post-fixture.html');
+    await page.locator('button.rsvp-reader-trigger').click();
+    const reader = page.locator('rsvp-reader[data-rsvp-auto]');
+    await expect(reader).toBeAttached();
+
+    await reader.evaluate((el: Element, t: string) => {
+      el.setAttribute('theme', t);
+    }, theme);
+
+    const settingsBtn = reader.locator('[data-control="settings"]');
+    await settingsBtn.hover();
+
+    const ratio = await reader.evaluate((el: Element) => {
+      const root = (el as HTMLElement).shadowRoot!;
+      const btn = root.querySelector('[data-control="settings"]') as HTMLElement;
+      if (!btn) throw new Error('Missing settings button');
+      const cs = getComputedStyle(btn);
+      const parse = (s: string) => {
+        const m = s.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (!m) throw new Error(`Cannot parse colour ${s}`);
+        return [Number(m[1]), Number(m[2]), Number(m[3])];
+      };
+      const fg = parse(cs.color);
+      const bg = parse(cs.backgroundColor);
+      const relLuminance = (r: number, g: number, b: number) => {
+        const toLin = (c: number) => {
+          const s = c / 255;
+          return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+        };
+        return 0.2126 * toLin(r) + 0.7152 * toLin(g) + 0.0722 * toLin(b);
+      };
+      const l1 = relLuminance(fg[0], fg[1], fg[2]);
+      const l2 = relLuminance(bg[0], bg[1], bg[2]);
+      const [hi, lo] = l1 > l2 ? [l1, l2] : [l2, l1];
+      return (hi + 0.05) / (lo + 0.05);
+    });
+
+    expect(ratio).toBeGreaterThanOrEqual(AA_BODY);
+  });
+}

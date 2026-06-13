@@ -80,9 +80,8 @@ export function mountPresentation(
   const sync = () => {
     syncReaderMount(host);
     const modal = isModalPresentation(host);
-    const overlayMode = host.getAttribute('data-mode') === 'overlay';
 
-    host.toggleAttribute('data-mobile-immersive', modal && !overlayMode && isMobileViewport());
+    host.toggleAttribute('data-mobile-immersive', modal && isMobileViewport());
     backdrop.hidden = !modal;
 
     if (modal) enterModal();

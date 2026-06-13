@@ -31,3 +31,27 @@ test('overlay mode: Escape closes and restores focus to trigger', async ({ page 
   const focusClass = await page.evaluate(() => (document.activeElement as HTMLElement | null)?.className);
   expect(focusClass).toContain('rsvp-reader-trigger');
 });
+
+test.describe('mobile viewport', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('overlay mode uses immersive layout and hides toolbar labels', async ({ page }) => {
+    await page.locator('button.rsvp-reader-trigger').click();
+    const reader = page.locator('rsvp-reader[data-rsvp-auto]');
+    await expect(reader).toHaveAttribute('data-mode', 'overlay');
+    await expect(reader).toHaveAttribute('data-mobile-immersive', '');
+
+    const layout = await reader.evaluate((el: Element) => {
+      const host = el as HTMLElement;
+      const root = host.shadowRoot!;
+      const rootEl = root.querySelector('.root') as HTMLElement;
+      const topLabel = root.querySelector('.toolbar-top .control-item__label') as HTMLElement;
+      return {
+        rootMaxWidth: getComputedStyle(rootEl).maxWidth,
+        topLabelDisplay: getComputedStyle(topLabel).display,
+      };
+    });
+    expect(layout.rootMaxWidth).toBe('none');
+    expect(layout.topLabelDisplay).toBe('none');
+  });
+});

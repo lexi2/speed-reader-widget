@@ -98,7 +98,17 @@
   line-height: 1.2;
   white-space: normal;
   cursor: pointer;
-  transition: background var(--rsvp-transition), color var(--rsvp-transition);
+  transition: background var(--rsvp-transition), color var(--rsvp-transition),
+              border-color var(--rsvp-transition);
+}
+
+.settings-segmented__btn:hover:not(:disabled):not([aria-pressed="true"]) {
+  background: var(--rsvp-accent-hover);
+  color: var(--rsvp-accent-hover-fg);
+}
+
+.settings-segmented__btn:active:not(:disabled):not([aria-pressed="true"]) {
+  background: var(--rsvp-accent-active);
 }
 
 .settings-segmented--row .settings-segmented__btn + .settings-segmented__btn {
@@ -125,6 +135,11 @@
   background: var(--rsvp-accent);
   color: var(--rsvp-on-accent);
   font-weight: 600;
+}
+
+.settings-segmented__btn[aria-pressed="true"]:hover:not(:disabled) {
+  background: var(--rsvp-accent-fill-hover);
+  color: var(--rsvp-on-accent);
 }
 
 :host([data-mobile-immersive]) .settings-panel {
@@ -196,26 +211,56 @@
   gap: 0.4rem;
   cursor: pointer;
   transition: background var(--rsvp-transition), border-color var(--rsvp-transition),
-              color var(--rsvp-transition), transform var(--rsvp-transition);
+              color var(--rsvp-transition), transform 80ms ease-out;
 }
 
-.btn:hover:not(:disabled):not(.btn--primary):not([data-control="play"]) {
-  background: var(--rsvp-surface);
+.btn:hover:not(:disabled):not(.btn--primary):not([data-control="play"]):not([aria-pressed="true"]) {
+  background: var(--rsvp-accent-hover);
+  border-color: var(--rsvp-accent-border-hover);
+  color: var(--rsvp-accent-hover-fg);
   cursor: pointer;
 }
+
+.btn:active:not(:disabled):not(.btn--primary):not([data-control="play"]):not([aria-pressed="true"]) {
+  background: var(--rsvp-accent-active);
+}
 .btn:hover:not(:disabled) { cursor: pointer; }
-.btn:disabled { cursor: not-allowed; opacity: 0.45; }
-.btn:active { transform: scale(0.97); }
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+  transition: transform 80ms ease-out;
+}
+
 .btn:focus-visible {
   outline: 2px solid var(--rsvp-focus);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
-.btn[aria-pressed="true"], .btn--primary {
+
+.btn[aria-pressed="true"]:not([data-control="play"]),
+.btn--primary:not([data-control="play"]) {
   background: var(--rsvp-accent);
   color: var(--rsvp-on-accent);
   border-color: var(--rsvp-accent);
 }
-.btn--primary:hover { filter: brightness(1.05); background: var(--rsvp-accent); }
+
+.btn[aria-pressed="true"]:not([data-control="play"]):hover:not(:disabled),
+.btn--primary:not([data-control="play"]):hover:not(:disabled) {
+  background: var(--rsvp-accent-fill-hover);
+  border-color: var(--rsvp-accent-fill-hover);
+}
+
+.btn[aria-pressed="true"]:not([data-control="play"]):active:not(:disabled),
+.btn--primary:not([data-control="play"]):active:not(:disabled) {
+  background: var(--rsvp-accent-fill-active);
+  border-color: var(--rsvp-accent-fill-active);
+}
 
 .btn.btn--primary[data-control="play"] {
   background: var(--rsvp-accent);
@@ -227,11 +272,39 @@
   min-width: 56px;
   min-height: 56px;
   padding: 0;
+  transition: background 120ms ease-out, border-color 120ms ease-out,
+              transform 80ms ease-out;
 }
 
 .btn.btn--primary[data-control="play"]:hover:not(:disabled) {
-  background: var(--rsvp-accent);
-  filter: brightness(1.05);
+  background: var(--rsvp-accent-fill-hover);
+  border-color: var(--rsvp-accent-fill-hover);
+}
+
+.btn.btn--primary[data-control="play"]:active:not(:disabled) {
+  background: var(--rsvp-accent-fill-active);
+  border-color: var(--rsvp-accent-fill-active);
+}
+
+.btn.btn--primary[data-control="play"][aria-pressed="true"] {
+  background: var(--rsvp-accent-on);
+  color: var(--rsvp-on-accent-on);
+  border-color: var(--rsvp-accent-on);
+}
+
+.btn.btn--primary[data-control="play"][aria-pressed="true"]:hover:not(:disabled) {
+  background: var(--rsvp-accent-on-hover);
+  border-color: var(--rsvp-accent-on-hover);
+}
+
+.btn.btn--primary[data-control="play"][aria-pressed="true"]:active:not(:disabled) {
+  background: var(--rsvp-accent-on-active);
+  border-color: var(--rsvp-accent-on-active);
+}
+
+.btn.btn--primary[data-control="play"]:focus-visible {
+  outline: 2px solid var(--rsvp-focus);
+  outline-offset: 3px;
 }
 
 .btn.btn--primary[data-control="play"] svg {
