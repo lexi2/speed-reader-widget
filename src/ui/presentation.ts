@@ -18,9 +18,6 @@ function getFocusables(root: ShadowRoot): HTMLElement[] {
   return Array.from(root.querySelectorAll<HTMLElement>(sel));
 }
 
-/**
- * Owns portal sync, backdrop, focus trap, and page inert for overlay + mobile modes.
- */
 export function mountPresentation(
   host: HTMLElement,
   root: ShadowRoot,

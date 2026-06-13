@@ -19,7 +19,6 @@ export interface ReaderChromeContext {
   renderStates: () => void;
 }
 
-/** Mount presentation, playback UI, controls, settings, and a11y helpers. */
 export function mountReaderChrome(ctx: ReaderChromeContext): () => void {
   const { host, root, store, scheduler, onExit, renderStates } = ctx;
   const teardown: Array<() => void> = [];

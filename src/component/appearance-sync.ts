@@ -1,15 +1,14 @@
 import type { Store } from '../core/state';
 import type { ReaderState } from '../core/types';
 import { applyFont, applyFontSize, applyTheme } from '../theme/theme';
-import { writePrefs } from '../utils/prefs';
+import { writePrefs, type UserPrefs } from '../utils/prefs';
 
-/** Apply theme/font DOM updates and persist prefs when store appearance fields change. */
 export function mountAppearanceSync(
   host: HTMLElement,
   store: Store<ReaderState>,
 ): () => void {
   return store.subscribe((next, prev) => {
-    const patch: Parameters<typeof writePrefs>[0] = {};
+    const patch: UserPrefs = {};
 
     if (next.theme !== prev.theme) {
       applyTheme(host, next.theme);

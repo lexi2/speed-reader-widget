@@ -24,14 +24,9 @@ export function requestPlayback(
   scheduler.toggle();
 }
 
-export function cancelCountdown(store?: Store<ReaderState>): void {
-  if (store) {
-    countdownCancels.get(store)?.();
-    countdownCancels.delete(store);
-    return;
-  }
-  for (const cancel of countdownCancels.values()) cancel();
-  countdownCancels.clear();
+export function cancelCountdown(store: Store<ReaderState>): void {
+  countdownCancels.get(store)?.();
+  countdownCancels.delete(store);
 }
 
 function runCountdown(
