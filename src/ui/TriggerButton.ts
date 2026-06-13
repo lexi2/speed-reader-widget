@@ -99,7 +99,7 @@ function injectTriggerStyles(): void {
   gap: 0.5rem;
   margin: 0 0 1.5rem;
   padding: 0.625rem 1rem;
-  font: 500 0.95rem/1 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+  font: 500 15px/1 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: white;
   background: #2563eb;

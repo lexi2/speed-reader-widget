@@ -81,8 +81,9 @@
 }
 
 :host([data-mobile-immersive]) .stage {
-  flex: 1;
-  min-height: clamp(7rem, 22dvh, 11rem);
+  flex: 0 1 auto;
+  min-height: var(--rsvp-stage-min-mobile);
+  max-height: var(--rsvp-stage-max-mobile);
 }
 
 :host([data-mobile-immersive]) .meta,
@@ -91,7 +92,7 @@
 }
 
 :host([data-mobile-immersive]) .meta {
-  font-size: 0.75rem;
+  font-size: var(--rsvp-ui-meta-mobile);
   padding: 0 0.25rem;
 }
 
@@ -220,6 +221,6 @@
   .toolbar-top__right,
   .toolbar-bottom__left,
   .toolbar-bottom__right { gap: 0.375rem; }
-  .btn { padding: 0.5rem; font-size: 0.85rem; }
+  .btn { padding: 0.5rem; font-size: 0.9375em; }
   .toolbar-bottom .control-item__label { display: none; }
 }

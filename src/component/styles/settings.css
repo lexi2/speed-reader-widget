@@ -96,7 +96,7 @@
   border: 1px solid var(--rsvp-border);
   border-radius: var(--rsvp-radius-sm);
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.9375em;
   font-weight: 500;
   padding: 0.5rem 0.75rem;
   min-width: 44px;
