@@ -153,3 +153,18 @@ test('settings font size applies data-font-size attribute', async ({ page }) => 
 
   expect(await reader(page).getAttribute('data-font-size')).toBe('l');
 });
+
+test('settings font size buttons show full word labels', async ({ page }) => {
+  await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    root.querySelector<HTMLButtonElement>('button[data-control="settings"]')?.click();
+  });
+
+  const labels = await reader(page).evaluate((el: Element) => {
+    const root = (el as HTMLElement).shadowRoot!;
+    return Array.from(root.querySelectorAll<HTMLButtonElement>('[data-font-size-pick]'))
+      .map((btn) => btn.textContent?.trim() ?? '');
+  });
+
+  expect(labels).toEqual(['Small', 'Medium', 'Large']);
+});

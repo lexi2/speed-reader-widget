@@ -134,7 +134,7 @@ Once the reader is open, the **settings** button in the top toolbar opens an in-
 |---|---|
 | Theme | Light, Dark, Auto (follows `prefers-color-scheme`) |
 | Font | Sans, Serif, Mono, Dyslexic |
-| Text size | S, M, L |
+| Text size | Small, Medium, Large |
 
 Choices are saved to `localStorage` and restored on the next visit. Script-tag defaults (`data-theme`, `data-font`) apply on first load; in-reader changes take precedence after that.
 
