@@ -88,7 +88,7 @@ The widget exposes design tokens at the `rsvp-reader` element. Site owners can o
 | `--rsvp-focus` | `#2563eb` | Focus ring |
 | `--rsvp-radius` | `12px` | Outer border radius |
 | `--rsvp-radius-sm` | `8px` | Button border radius |
-| `--rsvp-word-size` | `clamp(2rem, 6vw, 3.5rem)` | RSVP word display size |
+| `--rsvp-word-size` | `44px` (Medium; Small `38px`, Large `50px`) | RSVP word display size |
 
 Dark theme values are set automatically when `data-theme="dark"` resolves on the host.
 

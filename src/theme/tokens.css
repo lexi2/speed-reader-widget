@@ -21,7 +21,10 @@
   --rsvp-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
   --rsvp-shadow-overlay: 0 24px 64px rgba(0, 0, 0, 0.18);
 
-  --rsvp-word-size: clamp(2rem, 6vw, 3.5rem);
+  --rsvp-word-size: 44px;
+  --rsvp-word-size-s: 38px;
+  --rsvp-word-size-m: 44px;
+  --rsvp-word-size-l: 50px;
   --rsvp-line-height: 1.2;
 
   --rsvp-transition: 120ms ease;
@@ -52,10 +55,13 @@
 }
 
 :host([data-font-size="s"]) {
-  --rsvp-word-size: clamp(1.5rem, 5vw, 2.5rem);
+  --rsvp-word-size: var(--rsvp-word-size-s);
+}
+:host([data-font-size="m"]) {
+  --rsvp-word-size: var(--rsvp-word-size-m);
 }
 :host([data-font-size="l"]) {
-  --rsvp-word-size: clamp(2.5rem, 8vw, 4rem);
+  --rsvp-word-size: var(--rsvp-word-size-l);
 }
 
 @media (prefers-reduced-motion: reduce) {

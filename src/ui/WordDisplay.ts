@@ -16,8 +16,23 @@ export function mountWordDisplay(root: ShadowRoot, store: Store<ReaderState>): (
   const timeRemainingMeta = root.querySelector('[data-meta="time-remaining"]') as HTMLElement | null;
   const countdownEl = root.querySelector('[data-countdown]') as HTMLElement | null;
   const wordEl = root.querySelector('.word') as HTMLElement | null;
+  const stage = root.querySelector('.stage') as HTMLElement | null;
 
   if (!pre || !orp || !post) return () => {};
+
+  const fitWord = () => {
+    if (!wordEl || !stage || wordEl.hidden) {
+      wordEl?.style.removeProperty('font-size');
+      return;
+    }
+    wordEl.style.removeProperty('font-size');
+    const available = stage.clientWidth - 32;
+    if (available <= 0 || wordEl.scrollWidth <= available) return;
+    const base = parseFloat(getComputedStyle(wordEl).fontSize);
+    if (!Number.isFinite(base) || base <= 0) return;
+    const scaled = Math.floor(base * (available / wordEl.scrollWidth));
+    wordEl.style.fontSize = `${Math.max(18, scaled)}px`;
+  };
 
   const render = (state: ReaderState) => {
     const showWords = state.status === 'playing' || state.status === 'paused';
@@ -65,12 +80,14 @@ export function mountWordDisplay(root: ShadowRoot, store: Store<ReaderState>): (
       };
       statusMeta.textContent = t(statusKeys[state.status]);
     }
+
+    requestAnimationFrame(fitWord);
   };
 
   render(store.get());
   return subscribeFields(
     store,
-    ['idx', 'status', 'countdown', 'wpm', 'totalWords', 'words'],
+    ['idx', 'status', 'countdown', 'wpm', 'totalWords', 'words', 'fontSize'],
     render,
   );
 }

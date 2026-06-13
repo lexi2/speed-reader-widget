@@ -105,6 +105,7 @@
   letter-spacing: -0.02em;
   display: inline-flex;
   align-items: baseline;
+  max-width: 100%;
   white-space: nowrap;
 }
 
