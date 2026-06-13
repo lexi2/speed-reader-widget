@@ -2,30 +2,36 @@ import type { FontPreference, FontSizePreference, ThemePreference } from '../cor
 import { safeStorage } from './safe-storage';
 
 const PREFS_KEY = 'rsvp-reader:prefs';
+const LEGACY_THEME_KEY = 'rsvp-reader:theme';
 
 export interface UserPrefs {
   theme?: ThemePreference;
   font?: FontPreference;
   fontSize?: FontSizePreference;
-  alwaysShowToolbar?: boolean;
 }
 
 export function readPrefs(): UserPrefs {
   const raw = safeStorage.get(PREFS_KEY);
-  if (!raw) return {};
-  try {
-    const parsed = JSON.parse(raw) as UserPrefs;
-    return {
-      theme: validTheme(parsed.theme) ? parsed.theme : undefined,
-      font: validFont(parsed.font) ? parsed.font : undefined,
-      fontSize: validFontSize(parsed.fontSize) ? parsed.fontSize : undefined,
-      alwaysShowToolbar: typeof parsed.alwaysShowToolbar === 'boolean'
-        ? parsed.alwaysShowToolbar
-        : undefined,
-    };
-  } catch {
-    return {};
+  let prefs: UserPrefs = {};
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as UserPrefs;
+      prefs = {
+        theme: validTheme(parsed.theme) ? parsed.theme : undefined,
+        font: validFont(parsed.font) ? parsed.font : undefined,
+        fontSize: validFontSize(parsed.fontSize) ? parsed.fontSize : undefined,
+      };
+    } catch {
+      prefs = {};
+    }
   }
+
+  if (!prefs.theme) {
+    const legacy = safeStorage.get(LEGACY_THEME_KEY);
+    if (validTheme(legacy)) prefs.theme = legacy;
+  }
+
+  return prefs;
 }
 
 export function writePrefs(partial: UserPrefs): void {

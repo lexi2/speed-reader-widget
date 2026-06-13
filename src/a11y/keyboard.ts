@@ -1,8 +1,7 @@
 import type { Scheduler } from '../core/scheduler';
 import type { Store } from '../core/state';
-import { WPM_MAX, WPM_MIN, WPM_STEP } from '../core/types';
 import type { ReaderState } from '../core/types';
-import { requestPlayback } from '../ui/playback';
+import { dispatchReaderCommand } from '../ui/reader-commands';
 
 export function mountKeyboard(
   host: HTMLElement,
@@ -10,8 +9,9 @@ export function mountKeyboard(
   scheduler: Scheduler,
   onExit: () => void,
 ): () => void {
-  // Make the host focusable so keyboard handlers fire when nothing else holds focus.
   if (!host.hasAttribute('tabindex')) host.setAttribute('tabindex', '0');
+
+  const ctx = { store, scheduler, onExit };
 
   const handler = (e: KeyboardEvent) => {
     if (isTextInputTarget(e.target)) return;
@@ -20,38 +20,29 @@ export function mountKeyboard(
       case ' ':
       case 'Spacebar':
         e.preventDefault();
-        requestPlayback(store, scheduler);
+        dispatchReaderCommand('togglePlayback', ctx);
         break;
       case 'ArrowRight':
         e.preventDefault();
-        if (e.shiftKey) {
-          scheduler.seek(store.get().idx + 10);
-        } else {
-          scheduler.setWpm(Math.min(WPM_MAX, store.get().wpm + WPM_STEP));
-        }
+        dispatchReaderCommand(e.shiftKey ? 'seekForward' : 'wpmUp', ctx);
         break;
       case 'ArrowLeft':
         e.preventDefault();
-        if (e.shiftKey) {
-          scheduler.seek(store.get().idx - 10);
-        } else {
-          scheduler.setWpm(Math.max(WPM_MIN, store.get().wpm - WPM_STEP));
-        }
+        dispatchReaderCommand(e.shiftKey ? 'seekBack' : 'wpmDown', ctx);
         break;
       case 'r':
       case 'R':
         e.preventDefault();
-        scheduler.restart();
-        requestPlayback(store, scheduler);
+        dispatchReaderCommand('restartAndPlay', ctx);
         break;
       case 'Escape':
         e.preventDefault();
         if (store.get().settingsOpen) {
-          store.set({ settingsOpen: false });
+          dispatchReaderCommand('closeSettings', ctx);
         } else if (store.get().expanded) {
-          store.set({ expanded: false });
+          dispatchReaderCommand('closeExpanded', ctx);
         } else {
-          onExit();
+          dispatchReaderCommand('exit', ctx);
         }
         break;
     }

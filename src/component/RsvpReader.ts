@@ -1,27 +1,25 @@
 import { Scheduler } from '../core/scheduler';
-import { createReaderStore, Store } from '../core/state';
+import { createReaderStore, Store, subscribeFields } from '../core/state';
 import { parse } from '../core/parser';
 import type { FontPreference, LaunchMode, ReaderState, ThemePreference } from '../core/types';
 import { DEFAULT_CONFIG, WPM_MAX, WPM_MIN } from '../core/types';
 import { buildTemplate } from './template';
+import { mountAppearanceSync } from './appearance-sync';
 import {
   applyAccent,
   applyFont,
   applyFontSize,
   applyTheme,
-  persistThemeChoice,
-  readPersistedTheme,
   watchSystemTheme,
 } from '../theme/theme';
-import { readPrefs, writePrefs } from '../utils/prefs';
+import { readPrefs } from '../utils/prefs';
 import { mountWordDisplay } from '../ui/WordDisplay';
 import { mountControls } from '../ui/Controls';
-import { mountImmersive } from '../ui/immersive';
 import { mountSettingsPanel } from '../ui/SettingsPanel';
 import { mountStageDone } from '../ui/StageDone';
 import { mountStagePlay } from '../ui/StagePlay';
 import { cancelCountdown } from '../ui/playback';
-import { mountOverlay } from '../ui/Overlay';
+import { mountPresentation, syncPresentation } from '../ui/presentation';
 import { mountKeyboard } from '../a11y/keyboard';
 import { mountLiveRegion } from '../a11y/live-region';
 import { t, setLocale } from '../i18n';
@@ -67,9 +65,8 @@ export class RsvpReader extends HTMLElement {
     this.root.innerHTML = buildTemplate();
 
     const prefs = readPrefs();
-    const persistedTheme = readPersistedTheme();
     const themeAttr = (this.getAttribute(ATTR.THEME) as ThemePreference | null);
-    const initialTheme: ThemePreference = prefs.theme ?? persistedTheme ?? themeAttr ?? DEFAULT_CONFIG.theme;
+    const initialTheme: ThemePreference = prefs.theme ?? themeAttr ?? DEFAULT_CONFIG.theme;
 
     const fontAttr = (this.getAttribute(ATTR.FONT) as FontPreference | null) ?? DEFAULT_CONFIG.font;
     const initialFont: FontPreference = prefs.font ?? fontAttr;
@@ -82,7 +79,6 @@ export class RsvpReader extends HTMLElement {
       theme: initialTheme,
       font: initialFont,
       fontSize: initialFontSize,
-      alwaysShowToolbar: prefs.alwaysShowToolbar ?? false,
     });
     this.scheduler = new Scheduler(this.store);
 
@@ -95,37 +91,14 @@ export class RsvpReader extends HTMLElement {
     this.setAttribute('data-mode', this.getAttribute(ATTR.MODE) ?? DEFAULT_CONFIG.mode);
     applyZIndex(this);
 
-    // System theme watcher only matters for 'auto'
     this.teardown.push(
       watchSystemTheme(() => {
         if (this.store.get().theme === 'auto') applyTheme(this, 'auto');
       }),
     );
 
-    // Prefs + theme subscription
-    this.teardown.push(
-      this.store.subscribe((next, prev) => {
-        if (next.theme !== prev.theme) {
-          applyTheme(this, next.theme);
-          persistThemeChoice(next.theme);
-          writePrefs({ theme: next.theme });
-        }
-        if (next.font !== prev.font) {
-          applyFont(this, next.font);
-          writePrefs({ font: next.font });
-        }
-        if (next.fontSize !== prev.fontSize) {
-          applyFontSize(this, next.fontSize);
-          writePrefs({ fontSize: next.fontSize });
-        }
-        if (next.alwaysShowToolbar !== prev.alwaysShowToolbar) {
-          writePrefs({ alwaysShowToolbar: next.alwaysShowToolbar });
-        }
-      }),
-    );
-
-    // Mount UI pieces
-    this.teardown.push(mountImmersive(this, this.root, () => this.exit()));
+    this.teardown.push(mountAppearanceSync(this, this.store));
+    this.teardown.push(mountPresentation(this, this.root, () => this.exit()));
     this.teardown.push(mountWordDisplay(this.root, this.store));
     this.teardown.push(mountStagePlay(this.root, this.store));
     this.teardown.push(mountStageDone(this.root, this.store, this.scheduler));
@@ -134,18 +107,13 @@ export class RsvpReader extends HTMLElement {
     this.teardown.push(mountLiveRegion(this.root, this.store));
     this.teardown.push(mountKeyboard(this, this.store, this.scheduler, () => this.exit()));
 
-    if ((this.getAttribute(ATTR.MODE) ?? DEFAULT_CONFIG.mode) === 'overlay') {
-      this.teardown.push(mountOverlay(this, this.root, () => this.exit()));
-    }
-
-    // Status + empty state rendering
-    this.teardown.push(this.store.subscribe(() => this.renderStates()));
+    this.teardown.push(subscribeFields(this.store, ['totalWords'], () => this.renderStates()));
 
     this.loadTextFromAttributes();
   }
 
   disconnectedCallback(): void {
-    cancelCountdown();
+    cancelCountdown(this.store);
     this.scheduler?.destroy();
     for (const fn of this.teardown) try { fn(); } catch { /* noop */ }
     this.teardown = [];
@@ -167,6 +135,7 @@ export class RsvpReader extends HTMLElement {
       }
       case ATTR.MODE: {
         this.setAttribute('data-mode', (newValue as LaunchMode | null) ?? DEFAULT_CONFIG.mode);
+        syncPresentation(this);
         break;
       }
       case ATTR.TEXT:
@@ -179,9 +148,11 @@ export class RsvpReader extends HTMLElement {
       case ATTR.ACCENT:
         applyAccent(this, newValue);
         break;
-      case ATTR.FONT:
-        applyFont(this, (newValue as FontPreference | null) ?? DEFAULT_CONFIG.font);
+      case ATTR.FONT: {
+        const v = (newValue as FontPreference | null) ?? DEFAULT_CONFIG.font;
+        this.store.set({ font: v });
         break;
+      }
     }
   }
 
@@ -217,7 +188,7 @@ export class RsvpReader extends HTMLElement {
 
   /** Public API: close / hide the reader */
   exit(): void {
-    cancelCountdown();
+    cancelCountdown(this.store);
     this.store?.set({ settingsOpen: false, expanded: false });
     this.scheduler.pause();
     this.dispatchEvent(new CustomEvent('rsvp:exit', { bubbles: true, composed: true }));
@@ -229,7 +200,7 @@ export class RsvpReader extends HTMLElement {
 
   private loadTextFromAttributes(): void {
     const explicit = this.getAttribute(ATTR.TEXT);
-    if (explicit && explicit.trim()) {
+    if (explicit?.trim()) {
       this.setText(explicit);
       return;
     }
@@ -237,13 +208,10 @@ export class RsvpReader extends HTMLElement {
     if (selector) {
       const el = document.querySelector(selector);
       if (el) {
-        const parsed = parse(el);
-        this.scheduler.setWords(parsed.words);
-        this.renderStates();
+        this.setText(el);
         return;
       }
     }
-    // No text yet — leave empty state until setText() is called
     this.renderStates();
   }
 

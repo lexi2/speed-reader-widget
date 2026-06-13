@@ -1,7 +1,7 @@
 import type { Scheduler } from '../core/scheduler';
 import type { Store } from '../core/state';
 import type { FontPreference, FontSizePreference, ReaderState } from '../core/types';
-import { applyFont, applyFontSize, persistThemeChoice, resolveTheme } from '../theme/theme';
+import { resolveTheme } from '../theme/theme';
 import { setButtonLabel, setHoverHint } from './button-label';
 import { icons } from './icons';
 import { cancelCountdown } from './playback';
@@ -72,7 +72,7 @@ export function mountSettingsPanel(
   };
 
   const pauseForSettings = () => {
-    cancelCountdown();
+    cancelCountdown(store);
     if (store.get().status === 'playing') scheduler.pause();
   };
 
@@ -97,10 +97,7 @@ export function mountSettingsPanel(
     for (const pick of ['light', 'dark'] as ThemePick[]) {
       const btn = themeGroup.querySelector(`[data-theme-pick="${pick}"]`) as HTMLButtonElement | null;
       if (!btn) continue;
-      const fn = () => {
-        store.set({ theme: pick });
-        persistThemeChoice(pick);
-      };
+      const fn = () => store.set({ theme: pick });
       addHandler(btn, fn as EventListener);
     }
   }
@@ -109,10 +106,7 @@ export function mountSettingsPanel(
     for (const font of ['sans', 'serif', 'mono', 'dyslexic'] as FontPreference[]) {
       const btn = fontGroup.querySelector(`[data-font-pick="${font}"]`) as HTMLButtonElement | null;
       if (!btn) continue;
-      const fn = () => {
-        store.set({ font });
-        applyFont(host, font);
-      };
+      const fn = () => store.set({ font });
       addHandler(btn, fn as EventListener);
     }
   }
@@ -121,10 +115,7 @@ export function mountSettingsPanel(
     for (const size of ['s', 'm', 'l'] as FontSizePreference[]) {
       const btn = sizeGroup.querySelector(`[data-font-size-pick="${size}"]`) as HTMLButtonElement | null;
       if (!btn) continue;
-      const fn = () => {
-        store.set({ fontSize: size });
-        applyFontSize(host, size);
-      };
+      const fn = () => store.set({ fontSize: size });
       addHandler(btn, fn as EventListener);
     }
   }

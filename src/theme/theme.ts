@@ -1,8 +1,5 @@
 import type { FontPreference, FontSizePreference, ThemePreference } from '../core/types';
 import { accentNeedsDarkText } from '../utils/contrast';
-import { safeStorage } from '../utils/safe-storage';
-
-const STORAGE_KEY = 'rsvp-reader:theme';
 
 export function resolveTheme(pref: ThemePreference): 'light' | 'dark' {
   if (pref === 'light' || pref === 'dark') return pref;
@@ -19,21 +16,6 @@ export function watchSystemTheme(callback: (resolved: 'light' | 'dark') => void)
   const handler = () => callback(mq.matches ? 'dark' : 'light');
   mq.addEventListener('change', handler);
   return () => mq.removeEventListener('change', handler);
-}
-
-export function persistThemeChoice(pref: ThemePreference): void {
-  safeStorage.set(STORAGE_KEY, pref);
-}
-
-export function readPersistedTheme(): ThemePreference | null {
-  const v = safeStorage.get(STORAGE_KEY);
-  return v === 'light' || v === 'dark' || v === 'auto' ? v : null;
-}
-
-export function nextTheme(current: ThemePreference): ThemePreference {
-  if (current === 'auto') return 'light';
-  if (current === 'light') return 'dark';
-  return 'auto';
 }
 
 export function applyAccent(host: HTMLElement, accent: string | null): void {

@@ -49,6 +49,11 @@ type StringKey =
   | 'state.wpm'
   | 'state.skippedForward'
   | 'state.skippedBack'
+  | 'state.status.idle'
+  | 'state.status.countdown'
+  | 'state.status.playing'
+  | 'state.status.paused'
+  | 'state.status.done'
   | 'aria.word'
   | 'aria.progress'
   | 'overlay.title'
@@ -108,6 +113,11 @@ const en: Locale = {
   'state.wpm': '{n} words per minute',
   'state.skippedForward': 'Skipped forward 10 words.',
   'state.skippedBack': 'Skipped back 10 words.',
+  'state.status.idle': 'Ready',
+  'state.status.countdown': 'Starting',
+  'state.status.playing': 'Playing',
+  'state.status.paused': 'Paused',
+  'state.status.done': 'Finished',
   'aria.word': 'Current word',
   'aria.progress': 'Reading progress',
   'overlay.title': 'Speed reader',

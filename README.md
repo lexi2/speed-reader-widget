@@ -140,13 +140,31 @@ rsvp-reader {
 
 ```bash
 npm install
-npx playwright install chromium   # one-time
+npx playwright install   # one-time after clone (downloads Chromium + WebKit)
 
 npm run dev      # dev server with the included fixtures
 npm run build    # production build → dist/
 npm run size     # gzip size of the IIFE bundle (target < 30 KB)
-npm test         # Playwright e2e suite (64 tests)
+npm test         # Playwright e2e suite
 npm run test:ui  # Playwright UI mode for debugging
+```
+
+After cloning (or upgrading `@playwright/test`), install browser binaries before running tests:
+
+```bash
+npx playwright install
+```
+
+Chromium covers most tests; WebKit is required for the `iphone` project (`mobile-toolbar` and `countdown` specs). To install only what you need:
+
+```bash
+npx playwright install chromium webkit
+```
+
+Chromium-only during local work:
+
+```bash
+npx playwright test --project=chromium
 ```
 
 Manual checks not covered by automation (screen reader, Reduce Motion, real CMS smoke tests) are in `tests/manual-test-plan.md`.
