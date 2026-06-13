@@ -3,7 +3,6 @@ import { t } from '../i18n';
 import type { RsvpConfig } from '../core/types';
 import type { RsvpReader } from '../component/RsvpReader';
 import {
-  clearPortalIfEmpty,
   mountReaderInline,
   mountReaderToBody,
   needsPortal,
