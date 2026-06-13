@@ -50,7 +50,7 @@
 }
 
 .control-item__label {
-  font-size: 0.8rem;
+  font-size: 0.8125em;
   font-weight: 500;
   color: var(--rsvp-muted);
   line-height: 1;
@@ -71,7 +71,7 @@
     border-radius: var(--rsvp-radius-sm);
     background: var(--rsvp-fg);
     color: var(--rsvp-bg);
-    font-size: 0.75rem;
+    font-size: 0.75em;
     font-weight: 500;
     line-height: 1.2;
     opacity: 0;
@@ -128,7 +128,7 @@
     border-radius: var(--rsvp-radius-sm);
     background: var(--rsvp-fg);
     color: var(--rsvp-bg);
-    font-size: 0.75rem;
+    font-size: 0.75em;
     font-weight: 500;
     line-height: 1.2;
     white-space: nowrap;

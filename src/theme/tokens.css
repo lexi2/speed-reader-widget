@@ -1,4 +1,7 @@
 :host {
+  /* Decouple chrome typography from page html font-size (many CMS themes use 62.5%). */
+  font-size: 16px;
+
   --rsvp-bg: #ffffff;
   --rsvp-fg: #18181b;
   --rsvp-muted: #52525b;
@@ -23,6 +26,12 @@
 
   --rsvp-word-size: clamp(2rem, 6vw, 3.5rem);
   --rsvp-line-height: 1.2;
+
+  --rsvp-ui-meta: 0.9375em;
+  --rsvp-ui-meta-mobile: 1em;
+  --rsvp-stage-min: clamp(5rem, 12vh, 7.5rem);
+  --rsvp-stage-min-mobile: clamp(4.25rem, 12dvh, 6rem);
+  --rsvp-stage-max-mobile: clamp(5.5rem, 16dvh, 7.5rem);
 
   --rsvp-transition: 120ms ease;
 
