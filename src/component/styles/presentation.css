@@ -111,15 +111,6 @@
   .settings-panel {
     --rsvp-root-pad: 1.75rem;
   }
-
-  .settings-panel {
-    gap: 1.5rem;
-    font-size: 17px;
-  }
-
-  .settings-panel__title {
-    font-size: 1.35em;
-  }
 }
 
 /* Desktop CSS viewport expand (no browser Fullscreen API) */
@@ -173,10 +164,6 @@
   flex-shrink: 0;
 }
 
-:host([data-expanded]) .settings-panel {
-  font-size: 18px;
-}
-
 @media (max-width: 480px) {
   .root,
   .root__body,
@@ -185,36 +172,6 @@
   :host([data-mobile-immersive]) .root__body,
   :host([data-mobile-immersive]) .settings-panel {
     --rsvp-root-pad: 1.25rem;
-  }
-  :host([data-mobile-immersive]) .settings-panel {
-    gap: 0.875rem;
-    font-size: 15px;
-    overflow-y: auto;
-  }
-  :host([data-mobile-immersive]) .settings-panel__section {
-    gap: 0.5em;
-  }
-  :host([data-mobile-immersive]) .settings-segmented__btn {
-    padding: 0.5em 0.75em;
-    min-height: 2.5em;
-    font-size: 0.875em;
-  }
-  :host([data-mobile-immersive]) .settings-segmented--wrap {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 100%;
-    align-self: stretch;
-    border-radius: var(--rsvp-radius-sm);
-  }
-  :host([data-mobile-immersive]) .settings-segmented--wrap .settings-segmented__btn + .settings-segmented__btn {
-    border-left: none;
-    border-top: 1px solid var(--rsvp-border);
-  }
-  :host([data-mobile-immersive]) .settings-segmented--wrap .settings-segmented__btn:nth-child(odd) {
-    border-right: 1px solid var(--rsvp-border);
-  }
-  :host([data-mobile-immersive]) .settings-segmented--wrap .settings-segmented__btn:nth-child(-n+2) {
-    border-top: none;
   }
   .toolbar-bottom { gap: 0.375rem; }
   .toolbar-top__left,

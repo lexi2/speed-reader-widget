@@ -51,29 +51,31 @@ export function buildTemplate(): string {
       <h2 class="settings-panel__title" id="rsvp-settings-title" data-settings-title>Settings</h2>
       <button type="button" class="btn settings-panel__close" data-settings-close aria-label="Close settings"></button>
     </div>
-    <div class="settings-panel__section">
-      <span class="settings-panel__label" data-i18n="settings.theme">Theme</span>
-      <div class="settings-segmented" data-settings-theme role="group">
-        <button type="button" class="settings-segmented__btn" data-theme-pick="light">Light</button>
-        <button type="button" class="settings-segmented__btn" data-theme-pick="dark">Dark</button>
-        <button type="button" class="settings-segmented__btn" data-theme-pick="auto">Auto</button>
+    <div class="settings-panel__body">
+      <div class="settings-panel__section">
+        <span class="settings-panel__label" data-i18n="settings.theme">Theme</span>
+        <div class="settings-segmented settings-segmented--row" data-settings-theme role="group">
+          <button type="button" class="settings-segmented__btn" data-theme-pick="light">Light</button>
+          <button type="button" class="settings-segmented__btn" data-theme-pick="dark">Dark</button>
+          <button type="button" class="settings-segmented__btn" data-theme-pick="auto">Auto</button>
+        </div>
       </div>
-    </div>
-    <div class="settings-panel__section">
-      <span class="settings-panel__label" data-i18n="settings.font">Font</span>
-      <div class="settings-segmented settings-segmented--wrap" data-settings-font role="group">
-        <button type="button" class="settings-segmented__btn" data-font-pick="sans">Sans</button>
-        <button type="button" class="settings-segmented__btn" data-font-pick="serif">Serif</button>
-        <button type="button" class="settings-segmented__btn" data-font-pick="mono">Mono</button>
-        <button type="button" class="settings-segmented__btn" data-font-pick="dyslexic">Dyslexic</button>
+      <div class="settings-panel__section">
+        <span class="settings-panel__label" data-i18n="settings.font">Font</span>
+        <div class="settings-segmented settings-segmented--cols-2" data-settings-font role="group">
+          <button type="button" class="settings-segmented__btn" data-font-pick="sans">Sans</button>
+          <button type="button" class="settings-segmented__btn" data-font-pick="serif">Serif</button>
+          <button type="button" class="settings-segmented__btn" data-font-pick="mono">Mono</button>
+          <button type="button" class="settings-segmented__btn" data-font-pick="dyslexic">Dyslexic</button>
+        </div>
       </div>
-    </div>
-    <div class="settings-panel__section">
-      <span class="settings-panel__label" data-i18n="settings.fontSize">Text size</span>
-      <div class="settings-segmented" data-settings-font-size role="group">
-        <button type="button" class="settings-segmented__btn" data-font-size-pick="s">S</button>
-        <button type="button" class="settings-segmented__btn" data-font-size-pick="m">M</button>
-        <button type="button" class="settings-segmented__btn" data-font-size-pick="l">L</button>
+      <div class="settings-panel__section">
+        <span class="settings-panel__label" data-i18n="settings.fontSize">Text size</span>
+        <div class="settings-segmented settings-segmented--row" data-settings-font-size role="group">
+          <button type="button" class="settings-segmented__btn" data-font-size-pick="s"></button>
+          <button type="button" class="settings-segmented__btn" data-font-size-pick="m"></button>
+          <button type="button" class="settings-segmented__btn" data-font-size-pick="l"></button>
+        </div>
       </div>
     </div>
   </div>

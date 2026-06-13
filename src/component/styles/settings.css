@@ -12,7 +12,7 @@
   padding: var(--rsvp-root-pad);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
   pointer-events: auto;
   font-size: 16px;
   box-sizing: border-box;
@@ -24,6 +24,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .settings-panel__title {
@@ -31,13 +32,22 @@
   font-size: 1.25em;
   font-weight: 600;
   color: var(--rsvp-fg);
+  letter-spacing: -0.02em;
 }
 
 .settings-panel__close {
   flex-shrink: 0;
   padding: 0.5em;
-  min-width: 2.5em;
-  min-height: 2.5em;
+  min-width: 2.75em;
+  min-height: 2.75em;
+}
+
+.settings-panel__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 0;
 }
 
 .settings-panel__section {
@@ -47,23 +57,30 @@
 }
 
 .settings-panel__label {
-  font-size: 0.875em;
+  font-size: 0.8125em;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--rsvp-muted);
 }
 
 .settings-segmented {
-  display: inline-flex;
+  display: flex;
+  width: 100%;
+  align-self: stretch;
   border: 1px solid var(--rsvp-border);
-  border-radius: 999px;
+  border-radius: var(--rsvp-radius-sm);
   overflow: hidden;
   background: var(--rsvp-surface);
-  align-self: flex-start;
 }
 
-.settings-segmented--wrap {
-  flex-wrap: wrap;
-  border-radius: var(--rsvp-radius-sm);
+.settings-segmented--row {
+  flex-direction: row;
+}
+
+.settings-segmented--cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .settings-segmented__btn {
@@ -73,20 +90,91 @@
   font-family: inherit;
   font-size: 0.9375em;
   font-weight: 500;
-  padding: 0.625em 1.125em;
-  min-height: 2.75em;
+  padding: 0.75em 0.625em;
+  min-height: 2.875em;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
   cursor: pointer;
   transition: background var(--rsvp-transition), color var(--rsvp-transition);
 }
 
-.settings-segmented__btn + .settings-segmented__btn {
+.settings-segmented--row .settings-segmented__btn + .settings-segmented__btn {
   border-left: 1px solid var(--rsvp-border);
+}
+
+.settings-segmented--cols-2 .settings-segmented__btn + .settings-segmented__btn {
+  border-left: none;
+}
+
+.settings-segmented--cols-2 .settings-segmented__btn {
+  border-top: 1px solid var(--rsvp-border);
+}
+
+.settings-segmented--cols-2 .settings-segmented__btn:nth-child(odd) {
+  border-right: 1px solid var(--rsvp-border);
+}
+
+.settings-segmented--cols-2 .settings-segmented__btn:nth-child(-n+2) {
+  border-top: none;
 }
 
 .settings-segmented__btn[aria-pressed="true"] {
   background: var(--rsvp-accent);
   color: var(--rsvp-on-accent);
   font-weight: 600;
+}
+
+:host([data-mobile-immersive]) .settings-panel {
+  gap: 0.75rem;
+}
+
+:host([data-mobile-immersive]) .settings-panel__body {
+  flex: 1;
+  justify-content: space-evenly;
+  gap: clamp(1.25rem, 5vh, 2.25rem);
+}
+
+:host([data-mobile-immersive]) .settings-panel__section {
+  gap: 0.75em;
+}
+
+:host([data-mobile-immersive]) .settings-panel__label {
+  font-size: 0.875em;
+}
+
+:host([data-mobile-immersive]) .settings-segmented__btn {
+  min-height: 3.125em;
+  padding: 0.875em 0.5em;
+  font-size: 0.9375em;
+}
+
+@media (min-width: 481px) {
+  .settings-panel {
+    gap: 1.25rem;
+    font-size: 17px;
+  }
+
+  .settings-panel__title {
+    font-size: 1.35em;
+  }
+
+  .settings-panel__body {
+    gap: 1.5rem;
+  }
+
+  .settings-panel__label {
+    font-size: 0.8125em;
+  }
+
+  .settings-segmented__btn {
+    padding: 0.8125em 1em;
+    min-height: 3em;
+  }
+}
+
+:host([data-expanded]) .settings-panel {
+  font-size: 18px;
 }
 
 .btn {
@@ -179,4 +267,3 @@
 }
 .empty[hidden], .done[hidden], .stage[hidden] { display: none; }
 .done strong { color: var(--rsvp-fg); font-size: 1.1rem; }
-
