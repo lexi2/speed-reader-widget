@@ -126,6 +126,20 @@ rsvp-reader {
 }
 ```
 
+## Reader settings
+
+Once the reader is open, the **settings** button in the top toolbar opens an in-widget panel. Readers can adjust:
+
+| Setting | Options |
+|---|---|
+| Theme | Light, Dark, Auto (follows `prefers-color-scheme`) |
+| Font | Sans, Serif, Mono, Dyslexic |
+| Text size | S, M, L |
+
+Choices are saved to `localStorage` and restored on the next visit. Script-tag defaults (`data-theme`, `data-font`) apply on first load; in-reader changes take precedence after that.
+
+Opening settings pauses playback if the article is playing — press play again to resume.
+
 ## Keyboard shortcuts
 
 | Key | Action |
@@ -196,7 +210,7 @@ Event detail shape:
 ```ts
 {
   widget: 'rsvp-reader',
-  version: '0.1.0',
+  version: '0.3.0',
   context: 'parser' | 'scheduler-tick' | 'connectedCallback' | 'auto-install',
   error: unknown,
 }
