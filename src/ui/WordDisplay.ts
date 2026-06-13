@@ -2,7 +2,7 @@ import { findOrpIndex } from '../core/parser';
 import { secondsElapsed, secondsRemaining, subscribeFields, type Store } from '../core/state';
 import type { ReaderState } from '../core/types';
 import { formatTime } from '../utils/format-time';
-import { t } from '../i18n';
+import { t, type I18nKey } from '../i18n';
 
 export function mountWordDisplay(root: ShadowRoot, store: Store<ReaderState>): () => void {
   const pre = root.querySelector('.word .pre') as HTMLElement | null;
@@ -56,7 +56,7 @@ export function mountWordDisplay(root: ShadowRoot, store: Store<ReaderState>): (
     if (timeElapsedMeta) timeElapsedMeta.textContent = formatTime(secondsElapsed(state));
     if (timeRemainingMeta) timeRemainingMeta.textContent = formatTime(secondsRemaining(state));
     if (statusMeta) {
-      const statusKeys: Record<ReaderState['status'], Parameters<typeof t>[0]> = {
+      const statusKeys: Record<ReaderState['status'], I18nKey> = {
         idle: 'state.status.idle',
         countdown: 'state.status.countdown',
         playing: 'state.status.playing',

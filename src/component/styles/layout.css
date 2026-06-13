@@ -1,0 +1,174 @@
+:host {
+  display: block;
+  contain: layout style;
+  font-family: var(--rsvp-font-sans);
+  color: var(--rsvp-fg);
+}
+
+:host([hidden]) { display: none; }
+
+.root {
+  --rsvp-root-pad: 1.5rem;
+  position: relative;
+  background: var(--rsvp-bg);
+  color: var(--rsvp-fg);
+  border: 1px solid var(--rsvp-border);
+  border-radius: var(--rsvp-radius);
+  box-shadow: var(--rsvp-shadow);
+  margin: 1.5rem 0;
+  overflow: visible;
+  transition: background var(--rsvp-transition), color var(--rsvp-transition),
+              border-color var(--rsvp-transition);
+}
+
+.root__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: var(--rsvp-root-pad);
+}
+
+:host([data-settings-open]) .root {
+  overflow: hidden;
+}
+
+.stage {
+  position: relative;
+  min-height: clamp(120px, 18vh, 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--rsvp-surface);
+  border-radius: var(--rsvp-radius-sm);
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.btn.stage-play {
+  position: relative;
+  z-index: 1;
+  min-width: 72px;
+  min-height: 72px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  padding: 0;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
+.btn.stage-play svg { width: 28px; height: 28px; }
+.control-item[hidden] { display: none; }
+
+.stage-idle-hint {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--rsvp-muted);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.stage-idle-hint[hidden] { display: none; }
+
+:host([data-theme="light"]) .stage-idle-hint {
+  color: var(--rsvp-fg);
+}
+
+.stage[data-idle-cta] .word__guide,
+.stage[data-done-cta] .word__guide { display: none; }
+
+.countdown {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--rsvp-font-mono);
+  font-size: var(--rsvp-word-size);
+  line-height: var(--rsvp-line-height);
+  font-weight: 700;
+  color: var(--rsvp-orp);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.countdown[hidden], .word[hidden] { display: none; }
+
+.word {
+  font-family: var(--rsvp-font-sans);
+  font-size: var(--rsvp-word-size);
+  line-height: var(--rsvp-line-height);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.word .pre, .word .post { color: var(--rsvp-fg); }
+.word .orp { color: var(--rsvp-orp); font-weight: 700; }
+
+/* Atkinson ships as weight 400 only — medium/bold requests fall back to system sans */
+:host([data-font="dyslexic"]) .word,
+:host([data-font="dyslexic"]) .word .orp {
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.word__guide {
+  position: absolute;
+  left: 50%;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  width: 1px;
+  background: var(--rsvp-border);
+  pointer-events: none;
+}
+.word__guide::before, .word__guide::after {
+  content: "";
+  position: absolute;
+  left: -3px;
+  width: 7px;
+  height: 7px;
+  background: var(--rsvp-accent);
+  border-radius: 50%;
+}
+.word__guide::before { top: 0; }
+.word__guide::after { bottom: 0; }
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--rsvp-muted);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.meta__time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  justify-content: center;
+  min-width: 0;
+}
+.meta__time-sep { opacity: 0.5; }
+
+.progress {
+  width: 100%;
+  height: 4px;
+  background: var(--rsvp-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress__bar {
+  height: 100%;
+  background: var(--rsvp-accent);
+  width: 0%;
+  transition: width var(--rsvp-transition);
+}

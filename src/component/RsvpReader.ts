@@ -1,10 +1,11 @@
 import { Scheduler } from '../core/scheduler';
-import { createReaderStore, Store, subscribeFields } from '../core/state';
+import { createReaderStore, Store } from '../core/state';
 import { parse } from '../core/parser';
 import type { FontPreference, LaunchMode, ReaderState, ThemePreference } from '../core/types';
 import { DEFAULT_CONFIG, WPM_MAX, WPM_MIN } from '../core/types';
 import { buildTemplate } from './template';
 import { mountAppearanceSync } from './appearance-sync';
+import { mountReaderChrome } from './mount-reader-chrome';
 import {
   applyAccent,
   applyFont,
@@ -13,15 +14,8 @@ import {
   watchSystemTheme,
 } from '../theme/theme';
 import { readPrefs } from '../utils/prefs';
-import { mountWordDisplay } from '../ui/WordDisplay';
-import { mountControls } from '../ui/Controls';
-import { mountSettingsPanel } from '../ui/SettingsPanel';
-import { mountStageDone } from '../ui/StageDone';
-import { mountStagePlay } from '../ui/StagePlay';
 import { cancelCountdown } from '../ui/playback';
-import { mountPresentation, syncPresentation } from '../ui/presentation';
-import { mountKeyboard } from '../a11y/keyboard';
-import { mountLiveRegion } from '../a11y/live-region';
+import { syncPresentation } from '../ui/presentation';
 import { t, setLocale } from '../i18n';
 import { reportError } from '../observability/errors';
 import { clearPortalIfEmpty } from '../ui/portal';
@@ -98,16 +92,14 @@ export class RsvpReader extends HTMLElement {
     );
 
     this.teardown.push(mountAppearanceSync(this, this.store));
-    this.teardown.push(mountPresentation(this, this.root, () => this.exit()));
-    this.teardown.push(mountWordDisplay(this.root, this.store));
-    this.teardown.push(mountStagePlay(this.root, this.store));
-    this.teardown.push(mountStageDone(this.root, this.store, this.scheduler));
-    this.teardown.push(mountControls(this, this.root, this.store, this.scheduler, () => this.exit()));
-    this.teardown.push(mountSettingsPanel(this, this.root, this.store, this.scheduler));
-    this.teardown.push(mountLiveRegion(this.root, this.store));
-    this.teardown.push(mountKeyboard(this, this.store, this.scheduler, () => this.exit()));
-
-    this.teardown.push(subscribeFields(this.store, ['totalWords'], () => this.renderStates()));
+    this.teardown.push(mountReaderChrome({
+      host: this,
+      root: this.root,
+      store: this.store,
+      scheduler: this.scheduler,
+      onExit: () => this.exit(),
+      renderStates: () => this.renderStates(),
+    }));
 
     this.loadTextFromAttributes();
   }

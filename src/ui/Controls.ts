@@ -6,7 +6,7 @@ import { icons } from './icons';
 import { setButtonLabel } from './button-label';
 import { isMobileViewport } from '../utils/mobile';
 import { dispatchReaderCommand } from './reader-commands';
-import { t } from '../i18n';
+import { t, type I18nKey } from '../i18n';
 
 type ControlKey =
   | 'play' | 'slower' | 'faster' | 'skipBack' | 'skipForward'
@@ -16,8 +16,8 @@ type Slot = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom
 interface ButtonSpec {
   key: ControlKey;
   slot: Slot;
-  ariaKey: Parameters<typeof t>[0];
-  labelKey: Parameters<typeof t>[0];
+  ariaKey: I18nKey;
+  labelKey: I18nKey;
   ariaShortcut?: string;
   primary?: boolean;
   icon: keyof typeof icons;

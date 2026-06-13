@@ -1,10 +1,12 @@
 import tokensCss from '../theme/tokens.css?raw';
-import baseCss from './styles/base.css?raw';
+import layoutCss from './styles/layout.css?raw';
+import toolbarCss from './styles/toolbar.css?raw';
+import settingsCss from './styles/settings.css?raw';
 import presentationCss from './styles/presentation.css?raw';
 
 export function buildTemplate(): string {
   return `
-<style>${tokensCss}${baseCss}${presentationCss}</style>
+<style>${tokensCss}${layoutCss}${toolbarCss}${settingsCss}${presentationCss}</style>
 <div class="backdrop" part="backdrop" hidden></div>
 <div class="root" part="root" role="region" aria-label="Speed reader">
   <div class="root__body">

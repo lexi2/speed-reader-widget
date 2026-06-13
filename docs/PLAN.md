@@ -52,9 +52,15 @@ speedRead/
 │   │   ├── generic.ts             # Fallback: <article>, <main>, schema.org Article
 │   │   └── adapter.types.ts       # interface CmsAdapter { matches(): boolean; findArticle(): Element | null; insertionPoint(article): Element }
 │   ├── component/
-│   │   ├── RsvpReader.ts          # The HTMLElement subclass — lifecycle, attrs, shadow root
-│   │   ├── template.ts            # Static HTML template string for the shadow root
-│   │   └── styles.css             # Imported as raw string; scoped inside shadow root
+│   │   ├── RsvpReader.ts          # Custom element — lifecycle, attrs, shadow root
+│   │   ├── appearance-sync.ts     # store → DOM + prefs for theme/font/size
+│   │   ├── mount-reader-chrome.ts # Mounts presentation, UI, controls, a11y
+│   │   ├── template.ts            # Static HTML template for the shadow root
+│   │   └── styles/                # CSS modules inlined into shadow root
+│   │       ├── layout.css
+│   │       ├── toolbar.css
+│   │       ├── settings.css
+│   │       └── presentation.css
 │   ├── core/
 │   │   ├── parser.ts              # Pure: DOM/string → string[] of words
 │   │   ├── scheduler.ts           # Pure: WPM → tick interval; emits "advance" events
@@ -62,9 +68,12 @@ speedRead/
 │   │   └── types.ts               # Shared type definitions
 │   ├── ui/
 │   │   ├── WordDisplay.ts         # Reads state, renders current word w/ ORP highlight
-│   │   ├── Controls.ts            # Play/Pause, ±WPM, Restart, Exit, Theme buttons
-│   │   ├── TriggerButton.ts       # "Read Faster" CTA — built by auto-install, injected above article
-│   │   ├── Overlay.ts             # Modal wrapper for mode="overlay" (focus-trap, inert, Esc)
+│   │   ├── Controls.ts            # Play/Pause, ±WPM, Restart, Exit, Settings buttons
+│   │   ├── SettingsPanel.ts       # Theme/font/size settings sheet
+│   │   ├── presentation.ts        # Portal, backdrop, focus trap, mobile immersive
+│   │   ├── portal.ts              # Body portal mount for overlay/mobile
+│   │   ├── reader-commands.ts     # Shared command dispatcher for controls + keyboard
+│   │   ├── TriggerButton.ts       # "Read Faster" CTA — built by auto-install
 │   │   └── icons.ts               # Inline SVG strings (no icon font dep)
 │   ├── theme/
 │   │   ├── theme.ts               # Apply/toggle light/dark/auto; reads prefers-color-scheme
@@ -95,17 +104,20 @@ speedRead/
 | `adapters/wordpress.ts` | Matches: `<meta name="generator" content^="WordPress">` OR `body.single-post` OR `body.single`. Finds article via `.entry-content`, `article.post .post-content`, `<article>` inside `<main>`. Skips archive/category/home. | — |
 | `adapters/generic.ts` | Always matches (fallback). Finds first of: `<main> article`, `<article>`, `[itemtype*="schema.org/Article"] [itemprop="articleBody"]`, `[role="main"]`. Requires the candidate to contain >100 words to avoid grabbing card teasers. | — |
 | `adapters/index.ts` | Ordered registry: `[ghost, wordpress, generic]`. Iterates `matches()` calls; returns first hit. | All adapters |
-| `component/RsvpReader.ts` | The custom element. Owns the shadow root, observes attributes (`text`, `source-selector`, `wpm`, `theme`), wires `core` + `ui` + `a11y` modules together, manages mount/unmount. **Thin orchestrator only — no business logic.** | All `core/`, `ui/`, `theme/`, `a11y/` modules |
-| `component/template.ts` | Returns the static HTML scaffold inserted into the shadow root on connect. Plain template string. | — |
-| `component/styles.css` | All visual styling. Imported as raw text and injected into the shadow root in a single `<style>` tag. Uses CSS custom properties from `theme/tokens.css`. | `theme/tokens.css` |
+| `component/RsvpReader.ts` | Custom element. Owns shadow root, observes attributes, wires core + chrome modules. Thin orchestrator — delegates UI mounting to `mount-reader-chrome.ts`. | `core/`, `mount-reader-chrome`, `appearance-sync` |
+| `component/mount-reader-chrome.ts` | Single factory mounting presentation, word display, controls, settings, a11y. Returns one teardown function. | All `ui/`, `a11y/` mount modules |
+| `component/appearance-sync.ts` | Subscribes to store theme/font/fontSize; applies DOM + writes `prefs.ts` blob. | `theme/theme`, `utils/prefs` |
+| `component/template.ts` | Returns the static HTML scaffold inserted into the shadow root on connect. | — |
+| `component/styles/*.css` | Visual styling split by concern (layout, toolbar, settings, presentation). Inlined via `?raw` imports. | `theme/tokens.css` |
 | `core/parser.ts` | **Pure function.** Accepts either a string or a DOM node. Strips `<script>`, `<style>`, `<code>`, `<pre>`, `<nav>`, `<aside>`. Collapses whitespace, splits on word boundaries, preserves sentence-end pauses by emitting empty entries (so the scheduler can pause longer at `.`, `?`, `!`). Returns `{ words: string[], wordCount: number }`. | — |
 | `core/scheduler.ts` | Owns the timer loop. Given a WPM and a callback, ticks at `60000/wpm` ms. Exposes `play()`, `pause()`, `setWpm()`, `seek(idx)`. Reacts to `prefers-reduced-motion` by disabling transitions (not by slowing reading). | `state` |
 | `core/state.ts` | Tiny pub/sub store. Single source of truth for `{ idx, wpm, status: 'idle'\|'playing'\|'paused'\|'done', theme }`. All UI subscribes. Avoids reactive-framework overhead while keeping render logic predictable. | — |
 | `ui/WordDisplay.ts` | Subscribes to `state.idx`. Renders the current word with the **Optimal Recognition Point** letter highlighted (gives the eye a fixation anchor — small UX win for RSVP). Uses `aria-live="polite"` on a sibling live region; the visible word itself is `aria-hidden` to avoid screen-reader spam (see `a11y/live-region.ts`). | `state`, `a11y/live-region` |
 | `ui/Controls.ts` | Renders the button row. Each button is a real `<button>` with `aria-label` from `i18n`. Touch-target ≥44×44px. Dispatches actions to `state`/`scheduler`. | `state`, `scheduler`, `theme`, `i18n` |
-| `ui/TriggerButton.ts` | The "Read Faster" CTA. Built and inserted by `bootstrap/auto-install.ts` above the detected article body. Single button (not a custom element) — keeps the auto-injection path simple. On click, instantiates `<rsvp-reader>` either inline below itself or in an overlay, based on `data-mode`. | `RsvpReader`, `Overlay`, `i18n` |
-| `ui/Overlay.ts` | Focused-modal wrapper for `mode="overlay"`. Handles focus-trap, sets `inert` on siblings of body, Esc to close, restores focus to the trigger on close. Backdrop respects `prefers-reduced-motion`. | — |
-| `theme/theme.ts` | Resolves `theme` attribute: `light` / `dark` / `auto` (default). Listens to `prefers-color-scheme`. Toggles a `data-theme` attribute on the shadow root host. Persists the user's manual toggle in `safe-storage`. | `state`, `safe-storage` |
+| `ui/TriggerButton.ts` | The "Read Faster" CTA. Built and inserted by `bootstrap/auto-install.ts` above the detected article body. On click, instantiates `<rsvp-reader>` inline or via body portal based on `needsPortal()`. | `RsvpReader`, `portal`, `i18n` |
+| `ui/presentation.ts` | Owns overlay + mobile immersive presentation: portal sync, backdrop, focus trap, page inert, resize listeners. | `portal` |
+| `ui/reader-commands.ts` | Shared command dispatcher for controls, keyboard, and stage CTAs. | `playback`, `scheduler`, `state` |
+| `theme/theme.ts` | Resolves `theme` attribute: `light` / `dark` / `auto` (default). Listens to `prefers-color-scheme`. Toggles `data-theme` on the host. User prefs persisted via `appearance-sync` → `prefs.ts`. | `state`, `prefs` |
 | `theme/tokens.css` | Defines `--rsvp-bg`, `--rsvp-fg`, `--rsvp-accent`, `--rsvp-orp-color`, font stack, spacing scale. Light + dark variants via `[data-theme="dark"]` selector. Host page can override any token from outside the shadow root by setting the var on `rsvp-reader { --rsvp-accent: ... }` — this is the documented theming API for site owners. | — |
 | `a11y/keyboard.ts` | Single keyboard handler attached to the host element. Maps Space → play/pause, ←/→ → WPM ±25, R → restart, Esc → exit. Documented in the controls' `aria-keyshortcuts`. | `state`, `scheduler` |
 | `a11y/live-region.ts` | Throttled announcer. RSVP at 300 WPM is 5 words/sec — announcing every word would flood AT. Instead, announce sentences as they complete, and announce state changes ("paused", "350 words per minute", "finished"). | — |
@@ -183,12 +195,12 @@ PR 1 must demonstrate the **end-to-end single-script promise**: paste one tag in
 
 **Phase C — Web Component shell + theme**
 - `theme/tokens.css`, `theme/theme.ts`
-- `component/styles.css`, `component/template.ts`, `component/RsvpReader.ts`
+- `component/styles/`, `component/template.ts`, `component/RsvpReader.ts`, `component/mount-reader-chrome.ts`
 - `src/index.ts` registers the element
 - Shadow DOM rendering a static word display + theme toggle works end-to-end
 
 **Phase D — UI: word display + controls + overlay**
-- `ui/icons.ts`, `ui/WordDisplay.ts`, `ui/Controls.ts`, `ui/Overlay.ts`
+- `ui/icons.ts`, `ui/WordDisplay.ts`, `ui/Controls.ts`, `ui/presentation.ts`, `ui/reader-commands.ts`
 - Wire Play/Pause/±WPM/Restart/Exit to `scheduler` + `state`
 - ORP highlighting
 - Overlay mode with focus-trap, `inert`, Esc-to-close
@@ -322,7 +334,7 @@ Three feature requests captured at the end of the v0.2.2 session, in priority or
 - **Edge cases:** show `—:—` when totalWords === 0 (empty state); show `0:00` when done; recompute on every wpm change (don't precompute total at start).
 - **Accessibility:** the timer is decorative for the reading-flow user, but include it inside the `aria-live` announcer when status changes ("Paused at 2 minutes 34 seconds remaining") so screen-reader users get the same information at the same moments.
 
-**Files:** `core/state.ts`, `core/types.ts`, `ui/WordDisplay.ts`, `component/styles.css`, `utils/format-time.ts` (new), `i18n.ts` (new keys), plus a Playwright test that asserts the displayed remaining time decreases at a rate consistent with the WPM.
+**Files:** `core/state.ts`, `core/types.ts`, `ui/WordDisplay.ts`, `component/styles/layout.css`, `utils/format-time.ts`, `i18n.ts` (new keys), plus a Playwright test that asserts the displayed remaining time decreases at a rate consistent with the WPM.
 
 **Bundle impact estimate:** ~250 B gzipped.
 

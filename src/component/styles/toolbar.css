@@ -1,0 +1,170 @@
+.toolbar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  overflow: visible;
+}
+
+.toolbar-top__left {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.toolbar-top__right {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.toolbar-top__right { margin-left: auto; }
+
+.toolbar-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.75rem;
+  overflow: visible;
+}
+
+.toolbar-bottom__left,
+.toolbar-bottom__right {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.toolbar-bottom__center {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.control-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.control-item__label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--rsvp-muted);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (min-width: 481px) {
+  .control-item {
+    position: relative;
+  }
+
+  .control-item__label {
+    position: absolute;
+    left: 50%;
+    z-index: 6;
+    padding: 0.35rem 0.625rem;
+    border-radius: var(--rsvp-radius-sm);
+    background: var(--rsvp-fg);
+    color: var(--rsvp-bg);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-50%);
+    transition: opacity var(--rsvp-transition), visibility var(--rsvp-transition);
+  }
+
+  .toolbar-top .control-item__label {
+    bottom: calc(100% + 0.4rem);
+  }
+
+  .toolbar-bottom .control-item__label {
+    top: calc(100% + 0.4rem);
+    bottom: auto;
+  }
+
+  .control-item:hover .control-item__label,
+  .control-item .btn:focus-visible ~ .control-item__label {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* One toolbar hint at a time — avoids overlapping labels on adjacent controls */
+  .toolbar-top:hover .control-item:not(:hover) .control-item__label,
+  .toolbar-bottom:hover .control-item:not(:hover) .control-item__label {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  :host([data-settings-open]) .root__body .control-item__label,
+  :host([data-settings-open]) .root__body .control-item:hover .control-item__label,
+  :host([data-settings-open]) .root__body .control-item .btn:focus-visible ~ .control-item__label {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .control-item--primary .control-item__label {
+    color: var(--rsvp-bg);
+  }
+
+  .btn--hint {
+    position: relative;
+  }
+
+  .btn--hint::after {
+    content: attr(data-hint);
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 0.4rem);
+    z-index: 7;
+    padding: 0.35rem 0.625rem;
+    border-radius: var(--rsvp-radius-sm);
+    background: var(--rsvp-fg);
+    color: var(--rsvp-bg);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-50%);
+    transition: opacity var(--rsvp-transition), visibility var(--rsvp-transition);
+  }
+
+  .btn--hint:hover::after,
+  .btn--hint:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .settings-segmented {
+    overflow: visible;
+  }
+}
+
+.control-item--stage {
+  position: relative;
+  z-index: 1;
+}
+
+.control-item--stage .control-item__label {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+:host([data-theme="light"]) .control-item--stage .control-item__label {
+  color: var(--rsvp-fg);
+}
+
+.control-item--stage-done .control-item__label {
+  font-size: 1.125rem;
+}
+
