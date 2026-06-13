@@ -93,6 +93,6 @@ test('dyslexic font injects @font-face rule', async ({ page }) => {
 
 test('contrast helper flags low-contrast accents', () => {
   expect(accentNeedsDarkText('#fde047')).toBe(true);
-  expect(accentNeedsDarkText('#2563eb')).toBe(false);
+  expect(accentNeedsDarkText('#04395E')).toBe(false);
   expect(parseHexColor('#fff')).toEqual([255, 255, 255]);
 });

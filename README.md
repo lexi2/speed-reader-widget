@@ -82,10 +82,10 @@ The widget exposes design tokens at the `rsvp-reader` element. Site owners can o
 | `--rsvp-muted` | `#71717a` | Meta line, secondary text |
 | `--rsvp-surface` | `#f4f4f5` | Stage background |
 | `--rsvp-border` | `#e4e4e7` | Borders, progress track |
-| `--rsvp-accent` | `#2563eb` | Buttons, progress bar, guides |
+| `--rsvp-accent` | `#04395E` | Buttons, progress bar, guides |
 | `--rsvp-on-accent` | `#ffffff` | Text on accent surfaces |
-| `--rsvp-orp` | `#dc2626` | Optimal recognition point highlight |
-| `--rsvp-focus` | `#2563eb` | Focus ring |
+| `--rsvp-orp` | `#FE7F2D` | Optimal recognition point highlight |
+| `--rsvp-focus` | `#5386E4` | Focus ring |
 | `--rsvp-radius` | `12px` | Outer border radius |
 | `--rsvp-radius-sm` | `8px` | Button border radius |
 | `--rsvp-word-size` | `44px` (Medium; Small `38px`, Large `50px`) | RSVP word display size |

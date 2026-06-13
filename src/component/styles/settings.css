@@ -249,6 +249,35 @@
 }
 .btn[hidden] { display: none; }
 
+@media (max-width: 480px) {
+  .btn {
+    touch-action: manipulation;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0.625rem;
+  }
+
+  .btn svg { width: 20px; height: 20px; }
+
+  .btn[data-control="skipBack"] svg,
+  .btn[data-control="skipForward"] svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .btn.btn--primary[data-control="play"] {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
+  }
+
+  .btn.btn--primary[data-control="play"] svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px; height: 1px;

@@ -7,10 +7,10 @@
   --rsvp-muted: #52525b;
   --rsvp-surface: #f4f4f5;
   --rsvp-border: #e4e4e7;
-  --rsvp-accent: #2563eb;
+  --rsvp-accent: #04395E;
   --rsvp-on-accent: #ffffff;
-  --rsvp-orp: #dc2626;
-  --rsvp-focus: #2563eb;
+  --rsvp-orp: #FE7F2D;
+  --rsvp-focus: #5386E4;
 
   --rsvp-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -46,10 +46,10 @@
   --rsvp-muted: #a1a1aa;
   --rsvp-surface: #18181b;
   --rsvp-border: #27272a;
-  --rsvp-accent: #2546f0;
+  --rsvp-accent: #04395E;
   --rsvp-on-accent: #ffffff;
-  --rsvp-orp: #f87171;
-  --rsvp-focus: #2546f0;
+  --rsvp-orp: #FE7F2D;
+  --rsvp-focus: #5386E4;
 }
 
 :host([data-font="serif"]) {

@@ -101,9 +101,9 @@ function injectTriggerStyles(): void {
   padding: 0.625rem 1rem;
   font: 500 15px/1 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: white;
-  background: #2563eb;
-  border: 1px solid #2563eb;
+  color: #ffffff;
+  background: #04395E;
+  border: 1px solid #04395E;
   border-radius: 8px;
   cursor: pointer;
   transition: filter 120ms ease, transform 120ms ease;
@@ -111,11 +111,8 @@ function injectTriggerStyles(): void {
 }
 .rsvp-reader-trigger:hover { filter: brightness(1.08); }
 .rsvp-reader-trigger:active { transform: scale(0.98); }
-.rsvp-reader-trigger:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.rsvp-reader-trigger:focus-visible { outline: 2px solid #5386E4; outline-offset: 2px; }
 .rsvp-reader-trigger svg { width: 16px; height: 16px; }
-@media (prefers-color-scheme: dark) {
-  .rsvp-reader-trigger { background: #60a5fa; border-color: #60a5fa; color: #0a0a0b; }
-}
 @media (prefers-reduced-motion: reduce) {
   .rsvp-reader-trigger { transition: none; }
 }
