@@ -24,6 +24,7 @@ type StringKey =
   | 'control.label.exit'
   | 'control.label.dark'
   | 'control.label.light'
+  | 'control.label.auto'
   | 'control.label.settings'
   | 'control.label.fullscreen'
   | 'control.label.exitFullscreen'
@@ -60,6 +61,8 @@ type StringKey =
   | 'stage.idleHint'
   | 'done.again';
 
+export type I18nKey = StringKey;
+
 type Locale = Record<StringKey, string>;
 
 const en: Locale = {
@@ -84,6 +87,7 @@ const en: Locale = {
   'control.label.exit': 'Close screen reader',
   'control.label.dark': 'Dark Mode',
   'control.label.light': 'Light Mode',
+  'control.label.auto': 'Auto',
   'control.settings': 'Open settings panel',
   'control.fullscreen': 'Expand to fullscreen',
   'control.exitFullscreen': 'Collapse fullscreen',
