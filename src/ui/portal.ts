@@ -1,6 +1,7 @@
+import type { LaunchMode } from '../core/types';
 import { isMobileViewport } from '../utils/mobile';
 
-const PORTAL_ID = 'rsvp-portal-root';
+export const PORTAL_ID = 'rsvp-portal-root';
 const DEFAULT_Z_INDEX = '2147483647';
 
 const anchors = new WeakMap<HTMLElement, HTMLElement>();
@@ -55,8 +56,13 @@ export function clearPortalIfEmpty(): void {
   }
 }
 
+export function needsPortal(mode: LaunchMode): boolean {
+  return mode === 'overlay' || isMobileViewport();
+}
+
 export function shouldUsePortal(host: HTMLElement): boolean {
-  return host.getAttribute('data-mode') === 'overlay' || isMobileViewport();
+  const mode = (host.getAttribute('data-mode') as LaunchMode | null) ?? 'inline';
+  return needsPortal(mode);
 }
 
 export function syncReaderMount(host: HTMLElement): void {

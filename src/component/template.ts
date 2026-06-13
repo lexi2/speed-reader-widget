@@ -1,9 +1,12 @@
 import tokensCss from '../theme/tokens.css?raw';
-import componentCss from './styles.css?raw';
+import layoutCss from './styles/layout.css?raw';
+import toolbarCss from './styles/toolbar.css?raw';
+import settingsCss from './styles/settings.css?raw';
+import presentationCss from './styles/presentation.css?raw';
 
 export function buildTemplate(): string {
   return `
-<style>${tokensCss}${componentCss}</style>
+<style>${tokensCss}${layoutCss}${toolbarCss}${settingsCss}${presentationCss}</style>
 <div class="backdrop" part="backdrop" hidden></div>
 <div class="root" part="root" role="region" aria-label="Speed reader">
   <div class="root__body">
@@ -53,6 +56,7 @@ export function buildTemplate(): string {
       <div class="settings-segmented" data-settings-theme role="group">
         <button type="button" class="settings-segmented__btn" data-theme-pick="light">Light</button>
         <button type="button" class="settings-segmented__btn" data-theme-pick="dark">Dark</button>
+        <button type="button" class="settings-segmented__btn" data-theme-pick="auto">Auto</button>
       </div>
     </div>
     <div class="settings-panel__section">

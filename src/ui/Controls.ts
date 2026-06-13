@@ -1,12 +1,12 @@
-import type { Store } from '../core/state';
+import { subscribeFields, type Store } from '../core/state';
 import type { ReaderState } from '../core/types';
-import { WPM_MAX, WPM_MIN, WPM_STEP } from '../core/types';
+import { WPM_MAX, WPM_MIN } from '../core/types';
 import type { Scheduler } from '../core/scheduler';
 import { icons } from './icons';
 import { setButtonLabel } from './button-label';
 import { isMobileViewport } from '../utils/mobile';
-import { requestPlayback } from './playback';
-import { t } from '../i18n';
+import { dispatchReaderCommand } from './reader-commands';
+import { t, type I18nKey } from '../i18n';
 
 type ControlKey =
   | 'play' | 'slower' | 'faster' | 'skipBack' | 'skipForward'
@@ -16,8 +16,8 @@ type Slot = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom
 interface ButtonSpec {
   key: ControlKey;
   slot: Slot;
-  ariaKey: Parameters<typeof t>[0];
-  labelKey: Parameters<typeof t>[0];
+  ariaKey: I18nKey;
+  labelKey: I18nKey;
   ariaShortcut?: string;
   primary?: boolean;
   icon: keyof typeof icons;
@@ -41,6 +41,17 @@ interface ControlRefs {
   label: HTMLElement;
 }
 
+const controlCommands: Record<Exclude<ControlKey, 'settings'>, Parameters<typeof dispatchReaderCommand>[0]> = {
+  play: 'togglePlayback',
+  slower: 'wpmDown',
+  faster: 'wpmUp',
+  skipBack: 'seekBack',
+  skipForward: 'seekForward',
+  restart: 'restartAndPlay',
+  fullscreen: 'fullscreenToggle',
+  exit: 'exit',
+};
+
 export function mountControls(
   host: HTMLElement,
   root: ShadowRoot,
@@ -55,6 +66,7 @@ export function mountControls(
   if (slots.size === 0) return () => {};
 
   const refs: Partial<Record<ControlKey, ControlRefs>> = {};
+  const ctx = { store, scheduler, onExit };
 
   for (const spec of buttons) {
     const container = slots.get(spec.slot);
@@ -72,44 +84,16 @@ export function mountControls(
     settingsBtn.setAttribute('aria-haspopup', 'dialog');
   }
 
-  const onClick = (key: ControlKey) => {
-    const state = store.get();
-    switch (key) {
-      case 'play':
-        requestPlayback(store, scheduler);
-        break;
-      case 'slower':
-        scheduler.setWpm(Math.max(WPM_MIN, state.wpm - WPM_STEP));
-        break;
-      case 'faster':
-        scheduler.setWpm(Math.min(WPM_MAX, state.wpm + WPM_STEP));
-        break;
-      case 'skipBack':
-        scheduler.seek(state.idx - 10);
-        break;
-      case 'skipForward':
-        scheduler.seek(state.idx + 10);
-        break;
-      case 'restart':
-        scheduler.restart();
-        requestPlayback(store, scheduler);
-        break;
-      case 'fullscreen':
-        store.set({ expanded: !store.get().expanded });
-        refs.fullscreen?.btn.blur();
-        break;
-      case 'exit':
-        onExit();
-        break;
-    }
-  };
-
   const handlers: Array<{ btn: HTMLButtonElement; fn: () => void }> = [];
   for (const spec of buttons) {
     if (spec.key === 'settings') continue;
     const ref = refs[spec.key];
     if (!ref) continue;
-    const fn = () => onClick(spec.key);
+    const command = controlCommands[spec.key];
+    const fn = () => {
+      dispatchReaderCommand(command, ctx);
+      if (spec.key === 'fullscreen') refs.fullscreen?.btn.blur();
+    };
     ref.btn.addEventListener('click', fn);
     handlers.push({ btn: ref.btn, fn });
   }
@@ -165,7 +149,11 @@ export function mountControls(
   window.addEventListener('resize', onResize);
 
   renderPlayState(store.get());
-  const unsub = store.subscribe(renderPlayState);
+  const unsub = subscribeFields(
+    store,
+    ['status', 'settingsOpen', 'expanded', 'wpm'],
+    renderPlayState,
+  );
 
   return () => {
     unsub();

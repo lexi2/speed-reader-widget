@@ -1,13 +1,18 @@
 import type { Scheduler } from '../core/scheduler';
-import type { Store } from '../core/state';
-import type { FontPreference, FontSizePreference, ReaderState } from '../core/types';
-import { applyFont, applyFontSize, persistThemeChoice, resolveTheme } from '../theme/theme';
+import { subscribeFields, type Store } from '../core/state';
+import type { FontPreference, FontSizePreference, ReaderState, ThemePreference } from '../core/types';
 import { setButtonLabel, setHoverHint } from './button-label';
 import { icons } from './icons';
 import { cancelCountdown } from './playback';
-import { t } from '../i18n';
+import { t, type I18nKey } from '../i18n';
 
-type ThemePick = 'light' | 'dark';
+const THEME_PICKS: ThemePreference[] = ['light', 'dark', 'auto'];
+
+const themeLabelKeys: Record<ThemePreference, I18nKey> = {
+  light: 'control.label.light',
+  dark: 'control.label.dark',
+  auto: 'control.label.auto',
+};
 
 export function mountSettingsPanel(
   host: HTMLElement,
@@ -32,13 +37,13 @@ export function mountSettingsPanel(
 
   for (const el of panel.querySelectorAll<HTMLElement>('[data-i18n]')) {
     const key = el.dataset.i18n;
-    if (key) el.textContent = t(key as Parameters<typeof t>[0]);
+    if (key) el.textContent = t(key as I18nKey);
   }
 
   for (const btn of panel.querySelectorAll<HTMLButtonElement>('[data-font-pick]')) {
     const font = btn.dataset.fontPick;
     if (font) {
-      const label = t(`settings.font.${font}` as Parameters<typeof t>[0]);
+      const label = t(`settings.font.${font}` as I18nKey);
       btn.textContent = label;
       setHoverHint(btn, label);
     }
@@ -46,22 +51,16 @@ export function mountSettingsPanel(
   for (const btn of panel.querySelectorAll<HTMLButtonElement>('[data-font-size-pick]')) {
     const size = btn.dataset.fontSizePick;
     if (size) {
-      btn.textContent = t(`settings.fontSize.${size}` as Parameters<typeof t>[0]);
-      setButtonLabel(btn, t(`settings.fontSize.aria.${size}` as Parameters<typeof t>[0]), true);
+      btn.textContent = t(`settings.fontSize.${size}` as I18nKey);
+      setButtonLabel(btn, t(`settings.fontSize.aria.${size}` as I18nKey), true);
     }
   }
-  for (const btn of panel.querySelectorAll<HTMLButtonElement>('[data-theme-pick]')) {
-    const pick = btn.dataset.themePick;
-    if (pick === 'light') {
-      const label = t('control.label.light');
-      btn.textContent = label;
-      setHoverHint(btn, label);
-    }
-    if (pick === 'dark') {
-      const label = t('control.label.dark');
-      btn.textContent = label;
-      setHoverHint(btn, label);
-    }
+  for (const pick of THEME_PICKS) {
+    const btn = themeGroup?.querySelector<HTMLButtonElement>(`[data-theme-pick="${pick}"]`);
+    if (!btn) continue;
+    const label = t(themeLabelKeys[pick]);
+    btn.textContent = label;
+    setHoverHint(btn, label);
   }
 
   const handlers: Array<{ el: Element; fn: EventListener }> = [];
@@ -72,7 +71,7 @@ export function mountSettingsPanel(
   };
 
   const pauseForSettings = () => {
-    cancelCountdown();
+    cancelCountdown(store);
     if (store.get().status === 'playing') scheduler.pause();
   };
 
@@ -94,13 +93,10 @@ export function mountSettingsPanel(
   handlers.push({ el: closeBtn, fn: onCloseClick as EventListener });
 
   if (themeGroup) {
-    for (const pick of ['light', 'dark'] as ThemePick[]) {
+    for (const pick of THEME_PICKS) {
       const btn = themeGroup.querySelector(`[data-theme-pick="${pick}"]`) as HTMLButtonElement | null;
       if (!btn) continue;
-      const fn = () => {
-        store.set({ theme: pick });
-        persistThemeChoice(pick);
-      };
+      const fn = () => store.set({ theme: pick });
       addHandler(btn, fn as EventListener);
     }
   }
@@ -109,10 +105,7 @@ export function mountSettingsPanel(
     for (const font of ['sans', 'serif', 'mono', 'dyslexic'] as FontPreference[]) {
       const btn = fontGroup.querySelector(`[data-font-pick="${font}"]`) as HTMLButtonElement | null;
       if (!btn) continue;
-      const fn = () => {
-        store.set({ font });
-        applyFont(host, font);
-      };
+      const fn = () => store.set({ font });
       addHandler(btn, fn as EventListener);
     }
   }
@@ -121,10 +114,7 @@ export function mountSettingsPanel(
     for (const size of ['s', 'm', 'l'] as FontSizePreference[]) {
       const btn = sizeGroup.querySelector(`[data-font-size-pick="${size}"]`) as HTMLButtonElement | null;
       if (!btn) continue;
-      const fn = () => {
-        store.set({ fontSize: size });
-        applyFontSize(host, size);
-      };
+      const fn = () => store.set({ fontSize: size });
       addHandler(btn, fn as EventListener);
     }
   }
@@ -136,12 +126,9 @@ export function mountSettingsPanel(
     panel.setAttribute('aria-modal', String(open));
 
     if (themeGroup) {
-      const active = state.theme === 'light' || state.theme === 'dark'
-        ? state.theme
-        : resolveTheme(state.theme);
       for (const btn of themeGroup.querySelectorAll<HTMLButtonElement>('[data-theme-pick]')) {
-        const pick = btn.dataset.themePick as ThemePick;
-        btn.setAttribute('aria-pressed', String(pick === active));
+        const pick = btn.dataset.themePick as ThemePreference;
+        btn.setAttribute('aria-pressed', String(pick === state.theme));
       }
     }
 
@@ -160,7 +147,11 @@ export function mountSettingsPanel(
   };
 
   render(store.get());
-  const unsub = store.subscribe(render);
+  const unsub = subscribeFields(
+    store,
+    ['settingsOpen', 'theme', 'font', 'fontSize'],
+    render,
+  );
 
   return () => {
     unsub();

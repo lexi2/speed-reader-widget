@@ -2,11 +2,10 @@ import { icons } from './icons';
 import { t } from '../i18n';
 import type { RsvpConfig } from '../core/types';
 import type { RsvpReader } from '../component/RsvpReader';
-import { isMobileViewport } from '../utils/mobile';
 import {
-  clearPortalIfEmpty,
   mountReaderInline,
   mountReaderToBody,
+  needsPortal,
   setReaderAnchor,
 } from './portal';
 
@@ -40,10 +39,9 @@ export function buildTrigger(
 }
 
 function openReader(article: Element, trigger: HTMLButtonElement, config: RsvpConfig): void {
-  const existing = document.querySelector('rsvp-reader[data-rsvp-auto]');
+  const existing = document.querySelector('rsvp-reader[data-rsvp-auto]') as RsvpReader | null;
   if (existing) {
-    existing.remove();
-    clearPortalIfEmpty();
+    existing.exit();
     return;
   }
 
@@ -58,16 +56,12 @@ function openReader(article: Element, trigger: HTMLButtonElement, config: RsvpCo
   if (config.zIndex != null) reader.setAttribute('z-index', String(config.zIndex));
 
   setReaderAnchor(reader, trigger);
-  if (config.mode === 'overlay' || isMobileViewport()) {
+  if (needsPortal(config.mode)) {
     mountReaderToBody(reader);
   } else {
     mountReaderInline(reader, trigger);
   }
 
-  // Hand off the article *element* (not its textContent) so the parser can
-  // run its full strip pass — buttons, custom elements (ad slots), hidden
-  // subtrees, scripts, etc. Calling setText with the string textContent
-  // would smuggle all of that straight into the word stream.
   requestAnimationFrame(() => {
     if (typeof reader.setText === 'function') {
       reader.setText(article);
@@ -81,7 +75,6 @@ function openReader(article: Element, trigger: HTMLButtonElement, config: RsvpCo
 
 function getSelector(el: Element): string {
   if (el.id) return `#${el.id}`;
-  // Best-effort selector for the auto-detected article
   const tag = el.tagName.toLowerCase();
   const cls = Array.from(el.classList).slice(0, 2).map(c => `.${c}`).join('');
   return `${tag}${cls}`;

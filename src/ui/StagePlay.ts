@@ -1,4 +1,4 @@
-import type { Store } from '../core/state';
+import { subscribeFields, type Store } from '../core/state';
 import type { ReaderState } from '../core/types';
 import { t } from '../i18n';
 
@@ -19,7 +19,7 @@ export function mountStagePlay(
   };
 
   render(store.get());
-  const unsub = store.subscribe(render);
+  const unsub = subscribeFields(store, ['status', 'totalWords'], render);
 
   return () => {
     unsub();

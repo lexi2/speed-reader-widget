@@ -1,9 +1,9 @@
-import type { Store } from '../core/state';
+import { subscribeFields, type Store } from '../core/state';
 import type { ReaderState } from '../core/types';
 import type { Scheduler } from '../core/scheduler';
 import { icons } from './icons';
 import { setButtonLabel } from './button-label';
-import { requestPlayback } from './playback';
+import { dispatchReaderCommand } from './reader-commands';
 import { t } from '../i18n';
 
 /** Play-again CTA centred in the stage when reading is finished. */
@@ -24,10 +24,8 @@ export function mountStageDone(
   label.textContent = t('done.again');
   btn.setAttribute('aria-keyshortcuts', 'R');
 
-  const onClick = () => {
-    scheduler.restart();
-    requestPlayback(store, scheduler);
-  };
+  const ctx = { store, scheduler, onExit: () => {} };
+  const onClick = () => dispatchReaderCommand('restartAndPlay', ctx);
   btn.addEventListener('click', onClick);
 
   const render = (state: ReaderState) => {
@@ -37,7 +35,7 @@ export function mountStageDone(
   };
 
   render(store.get());
-  const unsub = store.subscribe(render);
+  const unsub = subscribeFields(store, ['status'], render);
 
   return () => {
     unsub();

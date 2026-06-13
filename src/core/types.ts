@@ -12,7 +12,6 @@ export interface ReaderState {
   theme: ThemePreference;
   font: FontPreference;
   fontSize: FontSizePreference;
-  alwaysShowToolbar: boolean;
   settingsOpen: boolean;
   expanded: boolean;
   totalWords: number;

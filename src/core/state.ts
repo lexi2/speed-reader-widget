@@ -28,6 +28,16 @@ export class Store<T extends object> {
   }
 }
 
+export function subscribeFields<T extends object>(
+  store: Store<T>,
+  fields: (keyof T)[],
+  listener: Listener<T>,
+): () => void {
+  return store.subscribe((next, prev) => {
+    if (fields.some((field) => next[field] !== prev[field])) listener(next, prev);
+  });
+}
+
 function shallowEqual<T extends object>(a: T, b: T): boolean {
   for (const key in a) if (a[key] !== b[key]) return false;
   for (const key in b) if (a[key] !== b[key]) return false;
@@ -43,7 +53,6 @@ export function createReaderStore(initial: Partial<ReaderState> = {}): Store<Rea
     theme: 'auto',
     font: 'sans',
     fontSize: 'm',
-    alwaysShowToolbar: false,
     settingsOpen: false,
     expanded: false,
     totalWords: 0,

@@ -2,7 +2,7 @@ import type { Scheduler } from '../core/scheduler';
 import type { Store } from '../core/state';
 import type { ReaderState } from '../core/types';
 
-let activeCancel: (() => void) | null = null;
+const countdownCancels = new WeakMap<Store<ReaderState>, () => void>();
 
 const STEP_MS = 800;
 
@@ -14,19 +14,19 @@ export function requestPlayback(
   const state = store.get();
   if (state.settingsOpen || state.status === 'countdown') return;
   if (state.status === 'idle') {
-    cancelCountdown();
-    activeCancel = runCountdown(store, () => {
-      activeCancel = null;
+    cancelCountdown(store);
+    countdownCancels.set(store, runCountdown(store, () => {
+      countdownCancels.delete(store);
       scheduler.play();
-    });
+    }));
     return;
   }
   scheduler.toggle();
 }
 
-export function cancelCountdown(): void {
-  activeCancel?.();
-  activeCancel = null;
+export function cancelCountdown(store: Store<ReaderState>): void {
+  countdownCancels.get(store)?.();
+  countdownCancels.delete(store);
 }
 
 function runCountdown(

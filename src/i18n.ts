@@ -24,6 +24,7 @@ type StringKey =
   | 'control.label.exit'
   | 'control.label.dark'
   | 'control.label.light'
+  | 'control.label.auto'
   | 'control.label.settings'
   | 'control.label.fullscreen'
   | 'control.label.exitFullscreen'
@@ -49,11 +50,18 @@ type StringKey =
   | 'state.wpm'
   | 'state.skippedForward'
   | 'state.skippedBack'
+  | 'state.status.idle'
+  | 'state.status.countdown'
+  | 'state.status.playing'
+  | 'state.status.paused'
+  | 'state.status.done'
   | 'aria.word'
   | 'aria.progress'
   | 'overlay.title'
   | 'stage.idleHint'
   | 'done.again';
+
+export type I18nKey = StringKey;
 
 type Locale = Record<StringKey, string>;
 
@@ -79,6 +87,7 @@ const en: Locale = {
   'control.label.exit': 'Close screen reader',
   'control.label.dark': 'Dark Mode',
   'control.label.light': 'Light Mode',
+  'control.label.auto': 'Auto',
   'control.settings': 'Open settings panel',
   'control.fullscreen': 'Expand to fullscreen',
   'control.exitFullscreen': 'Collapse fullscreen',
@@ -108,6 +117,11 @@ const en: Locale = {
   'state.wpm': '{n} words per minute',
   'state.skippedForward': 'Skipped forward 10 words.',
   'state.skippedBack': 'Skipped back 10 words.',
+  'state.status.idle': 'Ready',
+  'state.status.countdown': 'Starting',
+  'state.status.playing': 'Playing',
+  'state.status.paused': 'Paused',
+  'state.status.done': 'Finished',
   'aria.word': 'Current word',
   'aria.progress': 'Reading progress',
   'overlay.title': 'Speed reader',
