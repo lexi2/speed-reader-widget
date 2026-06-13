@@ -81,9 +81,8 @@
 }
 
 :host([data-mobile-immersive]) .stage {
-  flex: 0 1 auto;
+  flex: 1;
   min-height: var(--rsvp-stage-min-mobile);
-  max-height: var(--rsvp-stage-max-mobile);
 }
 
 :host([data-mobile-immersive]) .meta,

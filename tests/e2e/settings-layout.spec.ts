@@ -35,10 +35,14 @@ test('mobile settings segmented controls span panel width', async ({ page }) => 
 test('mobile settings panel fits without scrolling', async ({ page }) => {
   await openSettings(page);
 
-  const fits = await reader(page).evaluate((el: Element) => {
+  const layout = await reader(page).evaluate((el: Element) => {
     const panel = (el as HTMLElement).shadowRoot!.querySelector('[data-settings-panel]') as HTMLElement;
-    return panel.scrollHeight <= panel.clientHeight + 2;
+    return {
+      fits: panel.scrollHeight <= panel.clientHeight + 2,
+      overflowY: getComputedStyle(panel).overflowY,
+    };
   });
 
-  expect(fits).toBe(true);
+  expect(layout.fits).toBe(true);
+  expect(layout.overflowY).toBe('hidden');
 });

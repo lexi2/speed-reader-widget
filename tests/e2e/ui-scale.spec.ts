@@ -37,7 +37,7 @@ test.describe('mobile viewport', () => {
     expect(metaSize).toBeGreaterThanOrEqual(15);
   });
 
-  test('stage height is capped to leave room for chrome text', async ({ page }) => {
+  test('mobile stage uses immersive min-height', async ({ page }) => {
     await page.goto('/ghost-post-fixture.html');
     await openReader(page);
 
@@ -46,6 +46,6 @@ test.describe('mobile viewport', () => {
       return stage.getBoundingClientRect().height;
     });
 
-    expect(stageHeight).toBeLessThan(280);
+    expect(stageHeight).toBeGreaterThanOrEqual(112);
   });
 });

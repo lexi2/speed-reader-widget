@@ -32,9 +32,8 @@
 
   --rsvp-ui-meta: 0.9375em;
   --rsvp-ui-meta-mobile: 1em;
-  --rsvp-stage-min: clamp(5rem, 12vh, 7.5rem);
-  --rsvp-stage-min-mobile: clamp(4.25rem, 12dvh, 6rem);
-  --rsvp-stage-max-mobile: clamp(5.5rem, 16dvh, 7.5rem);
+  --rsvp-stage-min: clamp(120px, 18vh, 200px);
+  --rsvp-stage-min-mobile: clamp(7rem, 22dvh, 11rem);
 
   --rsvp-transition: 120ms ease;
 
