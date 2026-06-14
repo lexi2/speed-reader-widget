@@ -28,7 +28,7 @@ Tiered pricing is available for:
 - White-label / OEM redistribution
 - Enterprise self-hosting
 
-Contact for a quote: **alex@rosewarneconsulting.com.au**
+Contact for a quote: [open a GitHub issue](https://github.com/lexi2/speed-reader-widget/issues).
 
 ## Premium add-ons
 

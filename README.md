@@ -237,7 +237,7 @@ Content-Type: application/javascript; charset=utf-8
 
 ### Hosting it for you
 
-**Primary (Rosewarne Consulting CDN)** — version-pinned, immutable cache headers:
+**Primary (speedreaderwidget.xyz CDN)** — version-pinned, immutable cache headers:
 
 ```html
 <script src="https://cdn.speedreaderwidget.xyz/v0.3.0/rsvp-reader.iife.js" defer></script>
@@ -275,4 +275,4 @@ In plain English:
 - ✅ Embed the widget on a site you personally own (commercial or not) — this is "internal use" and is a Permitted Purpose.
 - ❌ Bundle this widget in your own product and resell it, host it as a managed service to third parties, or otherwise build a competing offering on top of it without a commercial license.
 
-For commercial licensing (multi-site, white-label, OEM, enterprise self-host), see [COMMERCIAL.md](COMMERCIAL.md) or email **alex@rosewarneconsulting.com.au**.
+For commercial licensing (multi-site, white-label, OEM, enterprise self-host), see [COMMERCIAL.md](COMMERCIAL.md).
