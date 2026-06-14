@@ -287,16 +287,18 @@ _Overlay mode:_
 
 ## Deferred operational tasks (to do when user has time)
 
-These are user-driven follow-ups that need credentials or browser actions and can't be completed from this CLI session yet:
+These are user-driven follow-ups that need credentials or browser actions:
 
-- [ ] **Authenticate `gh` CLI** so future GitHub operations are scriptable from here:
-  `gh auth login --hostname github.com --git-protocol https --web`
-- [ ] **Enable GitHub Pages** at https://github.com/lexi2/speed-reader-widget/settings/pages — set Source to **"GitHub Actions"**. After `gh` is authenticated this becomes:
-  `gh api -X POST /repos/lexi2/speed-reader-widget/pages -f build_type=workflow`
-- [ ] **Verify the first CI run** completed green:
-  `gh run list --workflow=ci.yml --limit 1` then `gh run view <id> --log` if it failed.
-- [ ] **Verify the Pages workflow** ran and the demo is live at https://lexi2.github.io/speed-reader-widget/
-- [ ] **Fill in the repo About sidebar** in the browser: description, website URL (the Pages URL above), and topics: `rsvp speed-reading widget web-components ghost-cms wordpress accessibility typescript embeddable shadow-dom`.
+- [x] **Cloudflare Pages project** — `speed-reader-widget` (Wrangler direct upload, not CF Git integration)
+- [x] **GitHub secrets** — `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- [x] **Deploy workflow** — `.github/workflows/deploy.yml` replaces GitHub Pages
+- [ ] **Custom domains in Cloudflare** — attach `cdn.speedreaderwidget.xyz` and `demo.speedreaderwidget.xyz` to the Pages project (DNS CNAME in Cloudflare)
+- [ ] **Verify deploy** — confirm `https://cdn.speedreaderwidget.xyz/v0.3.0/rsvp-reader.iife.js` returns `Cache-Control: immutable` and `Access-Control-Allow-Origin: *`
+- [ ] **Verify demo** — smoke-test `https://demo.speedreaderwidget.xyz/`
+- [ ] **Fill in the repo About sidebar** — website URL → demo domain; topics: `rsvp speed-reading widget web-components ghost-cms wordpress accessibility typescript embeddable shadow-dom`
+- [ ] **Authenticate `gh` CLI** (optional): `gh auth login --hostname github.com --git-protocol https --web`
+
+> **Deprecated:** `https://lexi2.github.io/speed-reader-widget/` — do not use for production embeds.
 
 ---
 

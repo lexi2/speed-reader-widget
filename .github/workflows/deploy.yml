@@ -1,0 +1,50 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build widget
+        run: npm run build
+
+      - name: Resolve version directory
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "dir=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+          else
+            VER=$(node -p "require('./package.json').version")
+            echo "dir=v${VER}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Assemble deploy site
+        run: bash scripts/assemble-deploy-site.sh "${{ steps.version.outputs.dir }}"
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy _site --project-name=speed-reader-widget

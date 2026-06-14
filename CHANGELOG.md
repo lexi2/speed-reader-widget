@@ -3,6 +3,11 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **Hosting migrated to Cloudflare Pages** — demo at `demo.speedreaderwidget.xyz`, production embeds at `cdn.speedreaderwidget.xyz/vX.Y.Z/rsvp-reader.iife.js`. GitHub Pages deploy workflow removed; GitHub Actions deploys via Wrangler on push to `main` and on release.
+
 ## [0.3.0] — 2026-06-09
 
 ### Added

@@ -1,12 +1,13 @@
 # speed-reader-widget
 
 [![CI](https://github.com/lexi2/speed-reader-widget/actions/workflows/ci.yml/badge.svg)](https://github.com/lexi2/speed-reader-widget/actions/workflows/ci.yml)
-[![Demo](https://img.shields.io/badge/demo-live-2546f0)](https://lexi2.github.io/speed-reader-widget/)
+[![Deploy](https://github.com/lexi2/speed-reader-widget/actions/workflows/deploy.yml/badge.svg)](https://github.com/lexi2/speed-reader-widget/actions/workflows/deploy.yml)
+[![Demo](https://img.shields.io/badge/demo-live-04395E)](https://demo.speedreaderwidget.xyz/)
 [![License: FSL-1.1-MIT](https://img.shields.io/badge/license-FSL--1.1--MIT-blue)](LICENSE)
 
 An embeddable Rapid Serial Visual Presentation reader for any blog or article-based CMS. Reads articles one word at a time at a user-chosen speed.
 
-**Live demo:** [lexi2.github.io/speed-reader-widget](https://lexi2.github.io/speed-reader-widget/)
+**Live demo:** [demo.speedreaderwidget.xyz](https://demo.speedreaderwidget.xyz/)
 
 ## Embed (single-script auto-install)
 
@@ -14,7 +15,7 @@ Add one tag once to your theme's footer (Ghost: Code Injection → Site Footer; 
 
 ```html
 <script
-  src="https://your-cdn.example.com/rsvp-reader.iife.js"
+  src="https://cdn.speedreaderwidget.xyz/v0.3.0/rsvp-reader.iife.js"
   data-wpm="300"
   data-theme="auto"
   data-mode="inline"
@@ -60,7 +61,7 @@ Set accent colour and font without writing CSS:
 
 ```html
 <script
-  src="https://your-cdn.example.com/rsvp-reader.iife.js"
+  src="https://cdn.speedreaderwidget.xyz/v0.3.0/rsvp-reader.iife.js"
   data-accent="#8b5cf6"
   data-font="serif"
   defer
@@ -226,7 +227,7 @@ To make this real in production, host the JS at a **versioned URL** and serve it
 
 ```
 # Versioned URL — change the version segment when you ship a new release
-https://your-cdn.example.com/v0.3.0/rsvp-reader.iife.js
+https://cdn.speedreaderwidget.xyz/v0.3.0/rsvp-reader.iife.js
 
 # Recommended CDN response headers
 Cache-Control: public, max-age=31536000, immutable
@@ -236,7 +237,15 @@ Content-Type: application/javascript; charset=utf-8
 
 ### Hosting it for you
 
-Three free, immutable, public paths are available out of the box once the package is on npm:
+**Primary (Rosewarne Consulting CDN)** — version-pinned, immutable cache headers:
+
+```html
+<script src="https://cdn.speedreaderwidget.xyz/v0.3.0/rsvp-reader.iife.js" defer></script>
+```
+
+Bump the version segment when you ship a new release. Do not use an unversioned URL for production embeds.
+
+**Secondary (npm CDNs)** — available once the package is published to npm:
 
 ```html
 <!-- unpkg, version-pinned -->
@@ -249,7 +258,9 @@ Three free, immutable, public paths are available out of the box once the packag
 <script type="module" src="https://esm.sh/speed-reader-widget@0.3.0"></script>
 ```
 
-`immutable` tells browsers they can keep the file forever without revalidation; site owners switch to a new version by pointing the `<script src>` at the new path. CDNs that work well for this: Cloudflare R2 + Cache Rules, AWS S3 + CloudFront, Bunny.net, Fastly, or even GitHub Pages for low-traffic free hosting.
+`immutable` tells browsers they can keep the file forever without revalidation; site owners switch to a new version by pointing the `<script src>` at the new path.
+
+> **Note:** `https://lexi2.github.io/speed-reader-widget/` is deprecated as a production embed URL. Use the version-pinned CDN URL above.
 
 **Verified by automated test:** `tests/e2e/offline.spec.ts` boots the widget, cuts the network, and asserts that (a) playback continues to advance, (b) controls remain responsive, and (c) zero network requests fire after the cutover.
 
